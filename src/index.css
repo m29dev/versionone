@@ -14,9 +14,15 @@ body {
     font-style: normal;
     font-variation-settings: 'wdth' 100;
 
-    max-width: 1000px;
-    margin: auto;
+    /* max-width: 1400px !important;
+    margin: auto !important; */
     background-color: rgb(253, 253, 253);
+
+    /* background-image: url('../public/image_welcome.png');
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center;
+    background-color: rgb(253, 253, 253);  */
 }
 
 code {

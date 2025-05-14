@@ -1,12 +1,12 @@
 .navbar {
-    height: 100px;
-    width: '100%';
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    height: 90px;
 }
 
 .logo {
     height: '100%';
     width: 200px;
+}
+
+.btn-primary {
+    color: white;
 }
