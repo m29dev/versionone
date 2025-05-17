@@ -8,33 +8,33 @@ const CommunitySection = () => {
             likes: 124,
         },
         {
-            user: 'David P.',
-            initials: 'DP',
+            user: 'Tomasz L.',
+            initials: 'TL',
             achievement:
-                'Reached new milestone - 60% of the JavaScript course.',
-            time: '1 week ago',
-            likes: 152,
+                'Reached new milestone - 30% of the Cyber Security course.',
+            time: '3 days ago',
+            likes: 67,
         },
         {
             user: 'Lee K.',
             initials: 'LK',
             achievement:
                 'Reached new milestone - 30% of the Cyber Security course.',
-            time: '3 days ago',
-            likes: 89,
+            time: '1 week ago',
+            likes: 101,
         },
     ]
 
     return (
-        <section id="community" className="bg-white py-20">
+        <section id="community" className="bg-transparent py-20">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-                        Join Our Thriving Community
+                        Our Thriving Community
                     </h2>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Share your coding journey, celebrate milestones, and
-                        connect with fellow learners from around the world.
+                        celebrate milestones, and connect with fellow learners
+                        from around the world.
                     </p>
                 </div>
 
@@ -42,15 +42,16 @@ const CommunitySection = () => {
                     {milestones.map((milestone, index) => (
                         <div
                             key={index}
-                            className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                            className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
                         >
                             <div className="pt-6">
-                                <div className="flex items-start space-x-4">
-                                    <div className="h-10 w-10 border-2 border-primary/20">
+                                <div className="flex">
+                                    <div className="h-10 p-1 rounded-full w-10 border-2 border-primary/20">
                                         <div className="bg-primary/10 text-primary">
                                             {milestone.initials}
                                         </div>
                                     </div>
+
                                     <div className="flex-1">
                                         <div className="flex justify-between">
                                             <h4 className="font-semibold text-gray-800">
@@ -60,6 +61,7 @@ const CommunitySection = () => {
                                                 {milestone.time}
                                             </span>
                                         </div>
+
                                         <p className="mt-2 text-gray-600">
                                             {milestone.achievement}
                                         </p>
