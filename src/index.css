@@ -35,18 +35,17 @@ body,
 html,
 body,
 #root {
-    height: 100%;
     margin: 0;
     background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
 }
 
-.hero-gradient {
+/* .hero-gradient {
     background: linear-gradient(135deg, #e6f0ff 0%, #f8fbff 100%);
 }
 
 .feature-gradient {
     background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
-}
+} */
 
 /* @layer base {
     :root {

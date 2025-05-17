@@ -1,11 +1,23 @@
 import React from 'react'
-import NavbarComponent from '../Components/NavbarComponent'
+
+import Navbar from '../Components/Navbar'
+import HeroSection from '../Components/HeroSection'
+import FeaturesSection from '../Components/FeaturesSection'
+import CommunitySection from '../Components/CommunitySection'
+import CtaSection from '../Components/CtaSection'
+import Footer from '../Components/Footer'
 
 const HomePage = () => {
     return (
-        <div>
-            <NavbarComponent />
-            HomePage
+        <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-grow">
+                <HeroSection />
+                <FeaturesSection />
+                <CommunitySection />
+                <CtaSection />
+            </main>
+            <Footer />
         </div>
     )
 }
