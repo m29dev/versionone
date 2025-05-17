@@ -6,14 +6,16 @@ import './App.css'
 
 import ClassPage from './Pages/ClassPage'
 import HomePage from './Pages/HomePage'
-import AuthPage from './Pages/AuthPage'
+import SignInPage from './Pages/SignInPage'
+import SignUpPage from './Pages/SignUpPage'
 
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/signin" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/class" element={<ClassPage />} />
             </Routes>
         </Router>
