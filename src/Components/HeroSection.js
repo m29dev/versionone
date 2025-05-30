@@ -7,9 +7,9 @@ const HeroSection = () => {
     return (
         <section className="min-h-[90vh] flex items-center pt-20">
             <div className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div className="flex flex-col space-y-6">
-                        <h1 className="text-xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight">
+                <div className="flex items-center">
+                    <div className="flex flex-col items-center space-y-6">
+                        <h1 className="text-3xl md:text-6xl lg:text-9xl font-bold text-gray-800 leading-tight">
                             Become{' '}
                             <span className="font-bold bg-gradient-to-r from-sky-500 via-fuchsia-400 to-sky-500 bg-clip-text text-transparent text-center">
                                 the best version
@@ -21,11 +21,12 @@ const HeroSection = () => {
                             Clarity. Focus. Impact.
                         </h1> */}
 
-                        <p className="font-bold text-lg text-gray-600 max-w-lg">
-                            Master technical skills through short video courses,
+                        <p className="font-bold text-lg text-gray-600 max-w-lg text-xl md:text-2xl lg:text-2xl pt-4">
+                            Master coding skills through short video courses,
                             knowledge tests, and a supportive community ready to
                             celebrate your milestones.
                         </p>
+
                         <div className="flex flex-wrap gap-4 pt-4">
                             <button
                                 className="bg-transparent text-blue-600 font-semibold px-6 py-3 rounded-full border flex items-center gap-2 border-blue-300 hover:border-blue-600 cursor-pointer"

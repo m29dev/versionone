@@ -65,6 +65,24 @@ const Navbar = () => {
                                 About
                             </div>
                         </li>
+                        <li>
+                            <div
+                                className="block py-2 pl-3 pr-4 text-gray-700 cursor-pointer
+ hover:text-primary md:p-0 "
+                                onClick={() => navigate('/signin')}
+                            >
+                                Sign In
+                            </div>
+                        </li>
+                        <li>
+                            <div
+                                className="block py-2 pl-3 pr-4 text-gray-700 cursor-pointer
+ hover:text-primary md:p-0 "
+                                onClick={() => navigate('/signup')}
+                            >
+                                Sign Up
+                            </div>
+                        </li>
                     </ul>
                 </div>
 
@@ -74,7 +92,7 @@ const Navbar = () => {
 "
                         onClick={() => navigate('/signin')}
                     >
-                        Sing In
+                        Sign In
                     </button>
 
                     <button
