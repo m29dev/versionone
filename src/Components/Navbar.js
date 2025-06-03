@@ -7,8 +7,8 @@ const Navbar = () => {
     const navigate = useNavigate()
 
     return (
-        <nav className="bg-transparent backdrop-blur-sm fixed w-full z-20 top-0 left-0 ">
-            <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-4 md:px-6">
+        <nav className="bg-[#ffffff] backdrop-blur-sm fixed w-full z-20 top-0 left-0 ">
+            <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-[1rem] md:p-[2rem] lg:p-[2rem]">
                 <div className="flex items-center">
                     <span className="text-primary font-bold cursor-pointer text-xl">
                         Version One

@@ -1,6 +1,7 @@
 import { Star } from 'lucide-react'
 import Navbar from '../Components/Navbar'
 import Footer from '../Components/Footer'
+import { useNavigate } from 'react-router-dom'
 
 const courses = [
     {
@@ -60,6 +61,7 @@ const courses = [
 ]
 
 const CoursesPage = () => {
+    const navigate = useNavigate()
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
@@ -144,6 +146,11 @@ const CoursesPage = () => {
                                     <button
                                         // className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-base font-medium"
                                         className={`bg-gradient-to-r ${course.color} w-full bg-primary hover:bg-primary/90 text-white py-3 text-base font-medium`}
+                                        onClick={() =>
+                                            navigate(
+                                                `/courses/${course.title.toLowerCase()}`
+                                            )
+                                        }
                                     >
                                         Start Learning
                                     </button>

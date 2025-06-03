@@ -9,6 +9,7 @@ import HomePage from './Pages/HomePage'
 import SignInPage from './Pages/SignInPage'
 import SignUpPage from './Pages/SignUpPage'
 import CoursesPage from './Pages/CoursesPage'
+import LearningPage from './Pages/LearningPage'
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/signin" element={<SignInPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/courses/:id" element={<LearningPage />} />
                 <Route path="/class" element={<ClassPage />} />
             </Routes>
         </Router>
