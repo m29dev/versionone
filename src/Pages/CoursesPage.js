@@ -2,6 +2,7 @@ import { Star } from 'lucide-react'
 import Navbar from '../Components/Navbar'
 import Footer from '../Components/Footer'
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 const courses = [
     {
@@ -26,7 +27,7 @@ const courses = [
         id: 2,
         title: 'Python',
         description:
-            'Master Python programming from scratch. Cover data structures, algorithms, web development with Django/Flask, and data science basics.',
+            'Master Python programming from scratch. Cover data structures, algorithms, automation scripts, web development with Django/Flask, and data science basics.',
         duration: '10 weeks',
         students: '18,320',
         rating: '4.8',
@@ -62,6 +63,11 @@ const courses = [
 
 const CoursesPage = () => {
     const navigate = useNavigate()
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
@@ -172,7 +178,9 @@ const CoursesPage = () => {
 
                         <button
                             className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
-                            // onClick={handleSignIn}
+                            onClick={() => {
+                                navigate('/quiz')
+                            }}
                         >
                             Take the Quiz
                         </button>

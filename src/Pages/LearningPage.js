@@ -467,6 +467,7 @@ const LearningPage = () => {
 
     // Funkcja wywolywana po kliknieciu na obszar wideo, aby przelaczyc wyciszenie
     const handleVideoClick = useCallback(() => {
+        console.log('Video Click')
         setIsMuted((prev) => !prev)
     }, [])
 
@@ -639,9 +640,9 @@ const LearningPage = () => {
             } else {
                 // Urzadzenia stacjonarne: Obsluga tylko kolkiem myszy
                 // Usun listenery dotykowe, aby uniknac konfliktow
-                container.removeEventListener('touchstart', handleTouchStart)
-                container.removeEventListener('touchmove', handleTouchMove)
-                container.removeEventListener('touchend', handleTouchEnd)
+                // container.removeEventListener('touchstart', handleTouchStart)
+                // container.removeEventListener('touchmove', handleTouchMove)
+                // container.removeEventListener('touchend', handleTouchEnd)
                 // Dodaj listener kolka myszy
                 container.addEventListener('wheel', handleWheel, {
                     passive: false,
@@ -665,6 +666,10 @@ const LearningPage = () => {
         handleScroll,
     ]) // Zaleznosci: referencje do funkcji obslugujacych zdarzenia
 
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     return (
         <div
             ref={containerRef}
@@ -683,6 +688,7 @@ const LearningPage = () => {
                         key={video.id}
                         videoData={video}
                         isActive={index === activeIndex}
+                        isMuted={isMuted}
                     />
                 ))}
             </main>
