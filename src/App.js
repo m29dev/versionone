@@ -10,6 +10,7 @@ import SignInPage from './Pages/SignInPage'
 import SignUpPage from './Pages/SignUpPage'
 import CoursesPage from './Pages/CoursesPage'
 import LearningPage from './Pages/LearningPage'
+import QuizPage from './Pages/QuizPage'
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/courses/:id" element={<LearningPage />} />
                 <Route path="/class" element={<ClassPage />} />
+                <Route path="/quiz" element={<QuizPage />} />
             </Routes>
         </Router>
     )
