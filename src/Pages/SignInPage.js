@@ -1,14 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Footer from '../Components/Footer'
 import Navbar from '../Components/Navbar'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from '../RTK/userSlice'
+import { supabase } from '../supabaseClient'
 
 const SignInPage = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [errorDisplay, setErrorDisplay] = useState(null)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { user } = useSelector((state) => state.user)
 
-    const handleSignIn = () => {
-        console.log('handleSignIn')
+    const handleSignIn = async () => {
+        try {
+            setErrorDisplay(null)
+            console.log('handleSignIn', email, password)
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            })
+            if (error) {
+                console.error('Login error:', error.message)
+                setErrorDisplay(error.message)
+            } else {
+                console.log('User signed in:', data)
+
+                dispatch(
+                    setUser({
+                        id: data?.user?.id,
+                        email: data?.user?.email,
+                    })
+                )
+            }
+        } catch (err) {
+            console.log(err)
+        }
     }
+
+    useEffect(() => {
+        if (user) {
+            navigate('/')
+        }
+    }, [user, navigate])
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -23,14 +60,24 @@ const SignInPage = () => {
                     </div>
 
                     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                        <form action="" method="GET" className="space-y-6">
+                        <div className="space-y-6">
                             <div className="flex-col">
-                                <label
-                                    htmlFor="email"
-                                    className="block text-sm/6 font-medium text-gray-900 justify-self-start"
-                                >
-                                    Email address
-                                </label>
+                                <div className="flex items-center justify-between">
+                                    <label
+                                        htmlFor="email"
+                                        className="block text-sm/6 font-medium text-gray-900 justify-self-start"
+                                    >
+                                        Email address
+                                    </label>
+
+                                    {errorDisplay && (
+                                        <div className="text-sm">
+                                            <p className="font-semibold text-yellow-600 hover:text-indigo-500 m-0">
+                                                {errorDisplay}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
                                 <div className="mt-2">
                                     <input
                                         id="email"
@@ -38,6 +85,10 @@ const SignInPage = () => {
                                         type="email"
                                         required
                                         autoComplete="email"
+                                        value={email}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value)
+                                        }}
                                         className="block w-full rounded-full  bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 border border-blue-300"
                                     />
                                 </div>
@@ -51,12 +102,6 @@ const SignInPage = () => {
                                     >
                                         Password
                                     </label>
-
-                                    <div className="text-sm">
-                                        <p className="font-semibold text-indigo-600 hover:text-indigo-500 m-0">
-                                            Forgot password?
-                                        </p>
-                                    </div>
                                 </div>
                                 <div className="mt-2">
                                     <input
@@ -65,13 +110,17 @@ const SignInPage = () => {
                                         type="password"
                                         required
                                         autoComplete="current-password"
+                                        value={password}
+                                        onChange={(e) => {
+                                            setPassword(e.target.value)
+                                        }}
                                         className="block w-full rounded-full  bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 border border-blue-300"
                                         // className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
                                     />
                                 </div>
                             </div>
 
-                            <div>
+                            <div className="flex justify-center">
                                 <button
                                     className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
                                     onClick={handleSignIn}
@@ -86,7 +135,7 @@ const SignInPage = () => {
                             >
                                 Not a member? Sign Up
                             </p>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </main>
