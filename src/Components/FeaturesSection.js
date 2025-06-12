@@ -6,7 +6,7 @@ const FeaturesSection = () => {
             icon: <BookOpen className="h-10 w-10 text-primary" />,
             title: 'Video Courses',
             description:
-                'Learn at your own pace with our comprehensive library of video courses, covering everything from basic HTML to advanced frameworks.',
+                'Learn at your own pace with our comprehensive library of video courses, covering everything from basic to advanced topics.',
         },
         {
             icon: <Code className="h-10 w-10 text-primary" />,
@@ -45,12 +45,12 @@ const FeaturesSection = () => {
                                 <div className="mb-4 flex justify-center">
                                     {feature.icon}
                                 </div>
-                                <div className="text-xl font-bold">
+                                <div className="text-xl font-bold text-center">
                                     {feature.title}
                                 </div>
                             </div>
                             <div>
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 text-center">
                                     {feature.description}
                                 </p>
                             </div>

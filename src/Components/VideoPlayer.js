@@ -54,7 +54,7 @@ import InstructionToast from './InstructionToast'
 // }
 
 // export default VideoPlayer
-const VideoPlayer = ({ videoData, isActive }) => {
+const VideoPlayer = ({ videoData, isActive, isMuted }) => {
     const videoRef = useRef(null)
     const containerRef = useRef(null)
     const [isPlaying, setIsPlaying] = useState(false)
@@ -62,13 +62,17 @@ const VideoPlayer = ({ videoData, isActive }) => {
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
-                const video = videoRef.current
+                const video = videoRef?.current
                 if (entry.isIntersecting) {
                     video?.play()
                     setIsPlaying(true)
                 } else {
                     video?.pause()
-                    video.currentTime = 0
+
+                    if (video) {
+                        video.currentTime = 0
+                    }
+
                     setIsPlaying(false)
                 }
             },
@@ -86,39 +90,39 @@ const VideoPlayer = ({ videoData, isActive }) => {
         }
     }, [])
 
-    const [isMuted, setIsMuted] = useState(true)
-    const [displayUnmute, setDisplayUnmute] = useState(false)
-    const [displayMute, setDisplayMute] = useState(false)
-    const [displayInstruction, setDisplayInstruction] = useState(true)
+    // const [isMuted, setIsMuted] = useState(true)
+    // const [displayUnmute, setDisplayUnmute] = useState(false)
+    // const [displayMute, setDisplayMute] = useState(false)
+    // const [displayInstruction, setDisplayInstruction] = useState(true)
 
-    const handleVideoClick = () => {
-        // any action hides instruction
-        setDisplayInstruction(false)
+    // const handleVideoClick = () => {
+    //     // any action hides instruction
+    //     setDisplayInstruction(false)
 
-        setIsMuted(!isMuted)
-        console.log('Video isMuted set to = ', !isMuted)
+    //     setIsMuted(!isMuted)
+    //     console.log('Video isMuted set to = ', !isMuted)
 
-        if (!isMuted) {
-            setDisplayUnmute(false)
-            setDisplayMute(true)
+    //     if (!isMuted) {
+    //         setDisplayUnmute(false)
+    //         setDisplayMute(true)
 
-            setTimeout(() => {
-                setDisplayMute(false)
-            }, 1000)
-        } else {
-            setDisplayMute(false)
-            setDisplayUnmute(true)
+    //         setTimeout(() => {
+    //             setDisplayMute(false)
+    //         }, 1000)
+    //     } else {
+    //         setDisplayMute(false)
+    //         setDisplayUnmute(true)
 
-            setTimeout(() => {
-                setDisplayUnmute(false)
-            }, 1000)
-        }
-    }
+    //         setTimeout(() => {
+    //             setDisplayUnmute(false)
+    //         }, 1000)
+    //     }
+    // }
 
     return (
         <div
             ref={containerRef}
-            onClick={handleVideoClick}
+            // onClick={handleVideoClick}
             // onTouchStart={handleVideoClick}
             className={`
         w-full h-screen
@@ -130,9 +134,9 @@ const VideoPlayer = ({ videoData, isActive }) => {
       `}
         >
             <video
-                // src={videoData.videoUrl}
+                src={videoData.videoUrl}
                 ref={videoRef}
-                src="https://yifcxhnhkmklkxiodfvh.supabase.co/storage/v1/object/sign/videos/Chart%20Your%20JavaScript%20Mastery%20Embark%20on%20a%20Transformative%20Roadmap%20to%20Success!.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82ZGI4YmYxMC0wMmI4LTQzNmQtOThiZS00N2I3ZjQwZmE5ZGMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlb3MvQ2hhcnQgWW91ciBKYXZhU2NyaXB0IE1hc3RlcnkgRW1iYXJrIG9uIGEgVHJhbnNmb3JtYXRpdmUgUm9hZG1hcCB0byBTdWNjZXNzIS5tcDQiLCJpYXQiOjE3NDk1NTc2MjUsImV4cCI6MzE3MTA5NTU3NjI1fQ.3Jvr2jIr5YKclW1hAdO0woeiXeXCodceoSf6-VLd6sM"
+                // src="https://yifcxhnhkmklkxiodfvh.supabase.co/storage/v1/object/sign/videos/Chart%20Your%20JavaScript%20Mastery%20Embark%20on%20a%20Transformative%20Roadmap%20to%20Success!.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82ZGI4YmYxMC0wMmI4LTQzNmQtOThiZS00N2I3ZjQwZmE5ZGMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlb3MvQ2hhcnQgWW91ciBKYXZhU2NyaXB0IE1hc3RlcnkgRW1iYXJrIG9uIGEgVHJhbnNmb3JtYXRpdmUgUm9hZG1hcCB0byBTdWNjZXNzIS5tcDQiLCJpYXQiOjE3NDk1NTc2MjUsImV4cCI6MzE3MTA5NTU3NjI1fQ.3Jvr2jIr5YKclW1hAdO0woeiXeXCodceoSf6-VLd6sM"
                 autoPlay
                 muted={isMuted}
                 loop
@@ -143,7 +147,7 @@ const VideoPlayer = ({ videoData, isActive }) => {
             <p className="absolute bottom-4 left-4 text-sm text-gray-400">
                 #{videoData.id} - {videoData.description}
             </p>
-
+            {/* 
             {displayUnmute && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <Volume2 className="w-32 h-32" />
@@ -166,7 +170,7 @@ const VideoPlayer = ({ videoData, isActive }) => {
                 // </div>
 
                 <InstructionToast />
-            )}
+            )} */}
         </div>
     )
 }
