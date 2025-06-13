@@ -10,9 +10,9 @@ const courses = [
         title: 'JavaScript',
         description:
             'Learn the fundamentals of web development with JavaScript. From basics to advanced concepts including ES6+, DOM manipulation, and modern frameworks.',
-        duration: '8 weeks',
-        students: '12,450',
-        rating: '4.9',
+        // duration: '8 weeks',
+        // students: '12,450',
+        // rating: '4.9',
         level: 'Beginner to Advanced',
         color: 'from-yellow-300 to-yellow-400',
         colorLearn: 'bg-yellow-300',
@@ -150,7 +150,6 @@ const CoursesPage = () => {
                                     </div>
 
                                     <button
-                                        // className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-base font-medium"
                                         className={`bg-gradient-to-r ${course.color} w-full bg-primary hover:bg-primary/90 text-white py-3 text-base font-medium`}
                                         onClick={() =>
                                             navigate(
