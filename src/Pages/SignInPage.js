@@ -29,15 +29,32 @@ const SignInPage = () => {
             } else {
                 console.log('User signed in:', data)
 
-                dispatch(
-                    setUser({
-                        id: data?.user?.id,
-                        email: data?.user?.email,
-                    })
-                )
+                fetchUserData(data?.user)
             }
         } catch (err) {
             console.log(err)
+        }
+    }
+
+    const fetchUserData = async (sign_in_user) => {
+        const { data, error } = await supabase
+            .from('UserData')
+            .select('*')
+            .eq('user_UID', sign_in_user?.id)
+
+        if (error) {
+            console.error('Fetch error:', error.message)
+        } else {
+            console.log('Fetched data:', data)
+
+            dispatch(
+                setUser({
+                    id: sign_in_user?.id,
+                    email: sign_in_user?.email,
+                    created: sign_in_user?.created_at,
+                    courses: data?.courses,
+                })
+            )
         }
     }
 

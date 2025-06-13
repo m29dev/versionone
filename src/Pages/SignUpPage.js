@@ -34,10 +34,37 @@ const SignUpPage = () => {
             } else {
                 console.log('User signed up:', data)
 
+                handleCreateUserData(data?.user)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const handleCreateUserData = async (sign_up_user) => {
+        try {
+            const { data, error } = await supabase
+                .from('UserData')
+                .insert([
+                    {
+                        user_UID: sign_up_user?.id,
+                        user_email: sign_up_user?.email,
+                        courses: { javascript: 1, python: 2, java: 3 },
+                    },
+                ])
+                .select()
+
+            if (error) {
+                console.error('Insert error:', error.message)
+            } else {
+                console.log(data)
+
                 dispatch(
                     setUser({
-                        id: data?.user?.id,
-                        email: data?.user?.email,
+                        id: sign_up_user?.id,
+                        email: sign_up_user?.email,
+                        created: sign_up_user?.created_at,
+                        courses: data?.courses,
                     })
                 )
             }
