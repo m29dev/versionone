@@ -10,3 +10,16 @@ export const getUserInfo = () => {
     if (!user) return null
     return JSON.parse(localStorage.getItem('userInfo'))
 }
+
+// video
+export const setVideoInfo = (videoObject) => {
+    localStorage.setItem('videoInfo', JSON.stringify(videoObject))
+}
+export const clearVideoInfo = () => {
+    localStorage.removeItem('videoInfo')
+}
+export const getVideoInfo = () => {
+    const video = localStorage.getItem('videoInfo')
+    if (!video) return null
+    return JSON.parse(localStorage.getItem('videoInfo'))
+}

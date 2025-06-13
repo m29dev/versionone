@@ -1,129 +1,79 @@
-// import React, { useEffect, useRef, useState } from 'react'
-
 import { ArrowDownUp, Volume, Volume2 } from 'lucide-react'
 import { useRef } from 'react'
 import { useEffect, useState } from 'react'
-import InstructionToast from './InstructionToast'
+import { useDispatch, useSelector } from 'react-redux'
+import { setVideo } from '../RTK/videoSlice'
 
-// const VideoPlayer = ({ src }) => {
-//     const videoRef = useRef(null)
-//     const containerRef = useRef(null)
-//     const [isPlaying, setIsPlaying] = useState(false)
-
-//     useEffect(() => {
-//         const observer = new IntersectionObserver(
-//             ([entry]) => {
-//                 const video = videoRef.current
-//                 if (entry.isIntersecting) {
-//                     video?.play()
-//                     setIsPlaying(true)
-//                 } else {
-//                     video?.pause()
-//                     setIsPlaying(false)
-//                 }
-//             },
-//             { threshold: 0.7 }
-//         )
-
-//         if (containerRef.current) {
-//             observer.observe(containerRef.current)
-//         }
-
-//         return () => {
-//             if (containerRef.current) {
-//                 observer.unobserve(containerRef.current)
-//             }
-//         }
-//     }, [])
-
-//     return (
-//         <div
-//             ref={containerRef}
-//             className="h-screen snap-start flex items-center justify-center"
-//         >
-//             <video
-//                 ref={videoRef}
-//                 src={src.videoUrl}
-//                 muted
-//                 loop
-//                 playsInline
-//                 className="w-full h-full object-cover"
-//             />
-//         </div>
-//     )
-// }
-
-// export default VideoPlayer
-const VideoPlayer = ({ videoData, isActive, isMuted }) => {
+const VideoPlayer = ({ videoData, isActive }) => {
     const videoRef = useRef(null)
     const containerRef = useRef(null)
-    const [isPlaying, setIsPlaying] = useState(false)
+    const { video } = useSelector((state) => state.video)
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
+        const containerRefClone = containerRef.current
         const observer = new IntersectionObserver(
             ([entry]) => {
-                const video = videoRef?.current
+                const videoData = videoRef?.current
                 if (entry.isIntersecting) {
-                    video?.play()
-                    setIsPlaying(true)
+                    videoData?.play()
                 } else {
-                    video?.pause()
+                    videoData?.pause()
 
-                    if (video) {
-                        video.currentTime = 0
+                    if (videoData) {
+                        videoData.currentTime = 0
                     }
-
-                    setIsPlaying(false)
                 }
             },
             { threshold: 0.7 }
         )
 
-        if (containerRef.current) {
-            observer.observe(containerRef.current)
+        if (containerRefClone) {
+            observer.observe(containerRefClone)
         }
 
         return () => {
-            if (containerRef.current) {
-                observer.unobserve(containerRef.current)
+            if (containerRefClone) {
+                observer.unobserve(containerRefClone)
             }
         }
     }, [])
 
-    // const [isMuted, setIsMuted] = useState(true)
-    // const [displayUnmute, setDisplayUnmute] = useState(false)
-    // const [displayMute, setDisplayMute] = useState(false)
+    const [displayUnmute, setDisplayUnmute] = useState(false)
+    const [displayMute, setDisplayMute] = useState(false)
     // const [displayInstruction, setDisplayInstruction] = useState(true)
 
-    // const handleVideoClick = () => {
-    //     // any action hides instruction
-    //     setDisplayInstruction(false)
+    const handleVideoClick = () => {
+        // setIsMuted(!isMuted)
+        console.log('Video isMuted set to = ', !video?.isMuted)
+        dispatch(setVideo({ isMuted: !video?.isMuted }))
 
-    //     setIsMuted(!isMuted)
-    //     console.log('Video isMuted set to = ', !isMuted)
+        if (!video?.isMuted) {
+            setDisplayUnmute(false)
+            setDisplayMute(true)
 
-    //     if (!isMuted) {
-    //         setDisplayUnmute(false)
-    //         setDisplayMute(true)
+            setTimeout(() => {
+                setDisplayMute(false)
+            }, 1000)
+        } else {
+            setDisplayMute(false)
+            setDisplayUnmute(true)
 
-    //         setTimeout(() => {
-    //             setDisplayMute(false)
-    //         }, 1000)
-    //     } else {
-    //         setDisplayMute(false)
-    //         setDisplayUnmute(true)
+            setTimeout(() => {
+                setDisplayUnmute(false)
+            }, 1000)
+        }
+    }
 
-    //         setTimeout(() => {
-    //             setDisplayUnmute(false)
-    //         }, 1000)
-    //     }
-    // }
+    useEffect(() => {
+        dispatch(setVideo({ isMuted: true, instructionState: true }))
+    }, [dispatch])
 
     return (
         <div
             ref={containerRef}
-            // onClick={handleVideoClick}
-            // onTouchStart={handleVideoClick}
+            onClick={handleVideoClick}
             className={`
         w-full h-screen
         flex items-center justify-center
@@ -133,21 +83,25 @@ const VideoPlayer = ({ videoData, isActive, isMuted }) => {
         snap-start
       `}
         >
-            <video
-                src={videoData.videoUrl}
-                ref={videoRef}
-                // src="https://yifcxhnhkmklkxiodfvh.supabase.co/storage/v1/object/sign/videos/Chart%20Your%20JavaScript%20Mastery%20Embark%20on%20a%20Transformative%20Roadmap%20to%20Success!.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82ZGI4YmYxMC0wMmI4LTQzNmQtOThiZS00N2I3ZjQwZmE5ZGMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlb3MvQ2hhcnQgWW91ciBKYXZhU2NyaXB0IE1hc3RlcnkgRW1iYXJrIG9uIGEgVHJhbnNmb3JtYXRpdmUgUm9hZG1hcCB0byBTdWNjZXNzIS5tcDQiLCJpYXQiOjE3NDk1NTc2MjUsImV4cCI6MzE3MTA5NTU3NjI1fQ.3Jvr2jIr5YKclW1hAdO0woeiXeXCodceoSf6-VLd6sM"
-                autoPlay
-                muted={isMuted}
-                loop
-                playsInline
-                className="w-full h-full"
-            />
+            {videoData?.videoUrl && (
+                <video
+                    src={videoData?.videoUrl}
+                    ref={videoRef}
+                    // src="https://yifcxhnhkmklkxiodfvh.supabase.co/storage/v1/object/sign/videos/Chart%20Your%20JavaScript%20Mastery%20Embark%20on%20a%20Transformative%20Roadmap%20to%20Success!.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82ZGI4YmYxMC0wMmI4LTQzNmQtOThiZS00N2I3ZjQwZmE5ZGMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlb3MvQ2hhcnQgWW91ciBKYXZhU2NyaXB0IE1hc3RlcnkgRW1iYXJrIG9uIGEgVHJhbnNmb3JtYXRpdmUgUm9hZG1hcCB0byBTdWNjZXNzIS5tcDQiLCJpYXQiOjE3NDk1NTc2MjUsImV4cCI6MzE3MTA5NTU3NjI1fQ.3Jvr2jIr5YKclW1hAdO0woeiXeXCodceoSf6-VLd6sM"
+                    autoPlay
+                    muted={video?.isMuted}
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover"
+                />
+            )}
+
+            {!videoData?.videoUrl && <div>Video URL error</div>}
 
             <p className="absolute bottom-4 left-4 text-sm text-gray-400">
-                #{videoData.id} - {videoData.description}
+                {videoData?.description}
             </p>
-            {/* 
+
             {displayUnmute && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <Volume2 className="w-32 h-32" />
@@ -160,17 +114,15 @@ const VideoPlayer = ({ videoData, isActive, isMuted }) => {
                 </div>
             )}
 
-            {displayInstruction && (
-                // <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                //     <ArrowDownUp />
+            {video?.instructionState && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <ArrowDownUp />
 
-                //     <p>Swipe Up / Down</p>
+                    <p>Swipe Up / Down</p>
 
-                //     <p>Tap to Mute / Unmute</p>
-                // </div>
-
-                <InstructionToast />
-            )} */}
+                    <p>Tap to Mute / Unmute</p>
+                </div>
+            )}
         </div>
     )
 }
