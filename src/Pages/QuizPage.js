@@ -1,120 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../Components/Navbar'
 import Footer from '../Components/Footer'
-
-const questions = [
-    {
-        id: 1,
-        question: "What's your primary goal for learning programming?",
-        options: [
-            {
-                text: 'Build websites and web applications',
-                value: 'web',
-                points: { javascript: 3, python: 1, java: 1 },
-            },
-            {
-                text: 'Data analysis and machine learning',
-                value: 'data',
-                points: { javascript: 0, python: 3, java: 1 },
-            },
-            {
-                text: 'Enterprise software development',
-                value: 'enterprise',
-                points: { javascript: 1, python: 1, java: 3 },
-            },
-            {
-                text: 'General programming knowledge',
-                value: 'general',
-                points: { javascript: 2, python: 2, java: 2 },
-            },
-        ],
-    },
-    {
-        id: 2,
-        question: 'How much programming experience do you have?',
-        options: [
-            {
-                text: 'Complete beginner',
-                value: 'beginner',
-                points: { javascript: 2, python: 3, java: 1 },
-            },
-            {
-                text: 'Some basic knowledge',
-                value: 'basic',
-                points: { javascript: 2, python: 2, java: 2 },
-            },
-            {
-                text: 'Intermediate level',
-                value: 'intermediate',
-                points: { javascript: 2, python: 2, java: 3 },
-            },
-            {
-                text: 'Advanced in other languages',
-                value: 'advanced',
-                points: { javascript: 2, python: 2, java: 3 },
-            },
-        ],
-    },
-    {
-        id: 3,
-        question: 'What type of projects interest you most?',
-        options: [
-            {
-                text: 'Interactive websites and mobile apps',
-                value: 'interactive',
-                points: { javascript: 3, python: 1, java: 2 },
-            },
-            {
-                text: 'Data visualization and automation',
-                value: 'automation',
-                points: { javascript: 1, python: 3, java: 1 },
-            },
-            {
-                text: 'Large-scale applications and systems',
-                value: 'systems',
-                points: { javascript: 1, python: 1, java: 3 },
-            },
-            {
-                text: 'Games and creative coding',
-                value: 'games',
-                points: { javascript: 2, python: 2, java: 2 },
-            },
-        ],
-    },
-    {
-        id: 4,
-        question: 'How do you prefer to see results?',
-        options: [
-            {
-                text: 'Quick visual feedback',
-                value: 'visual',
-                points: { javascript: 3, python: 2, java: 1 },
-            },
-            {
-                text: 'Data insights and analysis',
-                value: 'insights',
-                points: { javascript: 1, python: 3, java: 1 },
-            },
-            {
-                text: 'Robust, well-structured code',
-                value: 'structured',
-                points: { javascript: 1, python: 1, java: 3 },
-            },
-            {
-                text: 'Rapid prototyping',
-                value: 'prototyping',
-                points: { javascript: 2, python: 3, java: 1 },
-            },
-        ],
-    },
-]
+import { supabase } from '../supabaseClient'
 
 const QuizPage = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answers, setAnswers] = useState([])
     const [result, setResult] = useState(null)
     const navigate = useNavigate()
+    const [questions, setQuestions] = useState([])
 
     const handleAnswer = (option) => {
         setAnswers([...answers, option.points])
@@ -153,9 +52,19 @@ const QuizPage = () => {
         setResult(null)
     }
 
-    useEffect(() => {
-        window.scrollTo(0, 0)
+    const fetchQuizData = useCallback(async () => {
+        const { data, error } = await supabase.from('QuizData').select('*')
+
+        if (error) {
+            console.error('Fetch error:', error.message)
+        } else {
+            setQuestions(data)
+        }
     }, [])
+
+    useEffect(() => {
+        fetchQuizData()
+    }, [fetchQuizData])
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -167,25 +76,23 @@ const QuizPage = () => {
                             <>
                                 <h2 className="text-2xl font-semibold mb-4">
                                     Question {currentQuestion + 1} of{' '}
-                                    {questions.length}
+                                    {questions?.length}
                                 </h2>
                                 <p className="text-lg mb-6">
-                                    {questions[currentQuestion].question}
+                                    {questions?.[currentQuestion]?.question}
                                 </p>
                                 <div className="space-y-4">
-                                    {questions[currentQuestion].options.map(
-                                        (option, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() =>
-                                                    handleAnswer(option)
-                                                }
-                                                className="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-100 transition"
-                                            >
-                                                {option.text}
-                                            </button>
-                                        )
-                                    )}
+                                    {questions?.[
+                                        currentQuestion
+                                    ]?.options?.data?.map((option, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleAnswer(option)}
+                                            className="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-100 transition"
+                                        >
+                                            {option.text}
+                                        </button>
+                                    ))}
                                 </div>
                             </>
                         ) : (

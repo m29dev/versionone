@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { BookOpen, Settings, User, Trophy } from 'lucide-react'
 import Footer from '../Components/Footer'
@@ -7,15 +7,21 @@ import { useSelector } from 'react-redux'
 import { supabase } from '../supabaseClient'
 
 const UserPage = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     const navigate = useNavigate()
     const { pathname: url } = useLocation()
     const { user } = useSelector((state) => state.user)
 
-    const [courses, setCourses] = useState([])
+    const [totalCoursesCompleted, setTotalCoursesCompleted] = useState(0)
+
+    const courses = useMemo(() => ['javascript', 'python', 'java'], [])
+
+    const [learningState, setLearningState] = useState({})
 
     const fetchUserData = useCallback(async () => {
-        console.log('fetching user data, id: ', user?.id)
-
         const { data, error } = await supabase
             .from('UserData')
             .select('*')
@@ -24,66 +30,29 @@ const UserPage = () => {
         if (error) {
             console.error('Fetch error:', error.message)
         } else {
-            console.log('Fetched UserData:', data[0].courses)
-            // setVideos(data)
+            setLearningState(data[0].courses)
         }
     }, [user])
 
     useEffect(() => {
+        let count1 = 0
+        courses.map((course) => {
+            if (
+                learningState?.[course]?.completedLessons ===
+                learningState?.[course]?.totalLessons
+            ) {
+                return (count1 += 1)
+            } else {
+                return null
+            }
+        })
+
+        setTotalCoursesCompleted(count1)
+    }, [learningState, courses])
+
+    useEffect(() => {
         fetchUserData()
     }, [fetchUserData])
-
-    // const [courses] = useState([
-    //     {
-    //         id: 'javascript',
-    //         name: 'JavaScript',
-    //         progress: 40,
-    //         totalLessons: 10,
-    //         completedLessons: 4,
-    //         lastAccessed: '2 hours ago',
-    //         status: 'in-progress',
-    //     },
-    //     {
-    //         id: 'python',
-    //         name: 'Python',
-    //         progress: 100,
-    //         totalLessons: 10,
-    //         completedLessons: 10,
-    //         lastAccessed: '3 days ago',
-    //         status: 'completed',
-    //     },
-    //     {
-    //         id: 'java',
-    //         name: 'Java',
-    //         progress: 0,
-    //         totalLessons: 10,
-    //         completedLessons: 0,
-    //         lastAccessed: 'Never',
-    //         status: 'not-started',
-    //     },
-    // ])
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'completed':
-                return 'bg-green-500'
-            case 'in-progress':
-                return 'bg-blue-500'
-            default:
-                return 'bg-gray-500'
-        }
-    }
-
-    const getStatusText = (status) => {
-        switch (status) {
-            case 'completed':
-                return 'Completed'
-            case 'in-progress':
-                return 'In Progress'
-            default:
-                return 'Not Started'
-        }
-    }
 
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -110,7 +79,7 @@ const UserPage = () => {
                 if (data) setSuccessDisplay('Password changed successfully')
             }
         } catch (err) {
-            console.log(err)
+            setErrorResponseDisplay('Server error')
         }
     }
 
@@ -128,44 +97,50 @@ const UserPage = () => {
                     <div className="max-w-7xl mx-auto ">
                         <div className="space-y-6">
                             <div className="grid w-full grid-cols-3 max-w-md bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow px-1">
-                                <div
-                                    className={`flex justify-center items-center gap-2 cursor-pointer ${
-                                        url === '/user/overview'
-                                            ? 'text-primary'
-                                            : 'text-gray-700'
-                                    }`}
-                                    onClick={() => {
-                                        navigate('/user/overview')
-                                    }}
-                                >
-                                    <User className="w-4 h-4" />
-                                    Overview
+                                <div>
+                                    <div
+                                        className={`block py-2 pl-3 pr-4 md:p-0 flex justify-center items-center gap-2 cursor-pointer text-bold  ${
+                                            url === '/user/overview'
+                                                ? 'text-blue-500'
+                                                : 'text-gray-700'
+                                        }`}
+                                        onClick={() => {
+                                            navigate('/user/overview')
+                                        }}
+                                    >
+                                        <User className="w-4 h-4" />
+                                        Overview
+                                    </div>
                                 </div>
-                                <div
-                                    className={`flex justify-center items-center gap-2 cursor-pointer ${
-                                        url === '/user/courses'
-                                            ? 'text-primary'
-                                            : 'text-gray-700'
-                                    }`}
-                                    onClick={() => {
-                                        navigate('/user/courses')
-                                    }}
-                                >
-                                    <BookOpen className="w-4 h-4" />
-                                    Courses
+                                <div>
+                                    <div
+                                        className={`block py-2 pl-3 pr-4 md:p-0 flex justify-center items-center gap-2 cursor-pointer  ${
+                                            url === '/user/courses'
+                                                ? 'text-blue-500'
+                                                : 'text-gray-700'
+                                        }`}
+                                        onClick={() =>
+                                            navigate('/user/courses')
+                                        }
+                                    >
+                                        <BookOpen className="w-4 h-4" />
+                                        Courses
+                                    </div>
                                 </div>
-                                <div
-                                    className={`flex justify-center items-center gap-2 cursor-pointer ${
-                                        url === '/user/settings'
-                                            ? 'text-primary'
-                                            : 'text-gray-700'
-                                    }`}
-                                    onClick={() => {
-                                        navigate('/user/settings')
-                                    }}
-                                >
-                                    <Settings className="w-4 h-4" />
-                                    Settings
+                                <div>
+                                    <div
+                                        className={`block py-2 pl-3 pr-4 md:p-0 flex justify-center items-center gap-2 cursor-pointer ${
+                                            url === '/user/settings'
+                                                ? 'text-blue-500'
+                                                : 'text-gray-700'
+                                        }`}
+                                        onClick={() =>
+                                            navigate('/user/settings')
+                                        }
+                                    >
+                                        <Settings className="w-4 h-4" />
+                                        Settings
+                                    </div>
                                 </div>
                             </div>
 
@@ -177,7 +152,7 @@ const UserPage = () => {
                                 }`}
                             >
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="md:col-span-2 bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="md:col-span-2 bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow space-y-6">
                                         <div>
                                             <h3 className="flex items-center gap-2 font-medium font-bold">
                                                 Profile Information
@@ -206,37 +181,29 @@ const UserPage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow space-y-6">
                                         <div>
                                             <h3 className="flex items-center gap-2 font-medium font-bold">
-                                                <Trophy className="w-6 h-6" />
                                                 Statistics
                                             </h3>
+
+                                            <label className="text-sm font-medium text-gray-600">
+                                                Courses Completed
+                                            </label>
                                         </div>
                                         <div className="space-y-4">
-                                            <div className="text-center">
-                                                <p className="text-3xl font-bold text-primary">
-                                                    {
-                                                        user?.totalCoursesCompleted
-                                                    }
+                                            <div className="flex items-center">
+                                                <p className="text-6xl font-bold text-primary flex items-center text-gray-900">
+                                                    {totalCoursesCompleted}
                                                 </p>
-                                                <p className="text-sm text-gray-600">
-                                                    Courses Completed
-                                                </p>
-                                            </div>
-                                            <div className="text-center">
-                                                <p className="text-3xl font-bold text-primary">
-                                                    {user?.totalHoursLearned}
-                                                </p>
-                                                <p className="text-sm text-gray-600">
-                                                    Hours Learned
-                                                </p>
+
+                                                <Trophy className="w-10 h-10" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow space-y-6    ">
                                     <div>
                                         <h3 className="flex items-center gap-2 font-medium font-bold">
                                             Recent Course Activity
@@ -248,51 +215,48 @@ const UserPage = () => {
                                     </div>
                                     <div>
                                         <div className="space-y-4">
-                                            {courses
-                                                .filter(
-                                                    (course) =>
-                                                        course.status ===
-                                                        'in-progress'
-                                                )
-                                                .map((course) => (
-                                                    <div
-                                                        key={course.id}
-                                                        className="flex items-center justify-between p-4 border rounded-lg"
-                                                    >
-                                                        <div className="flex-1">
-                                                            <h3 className="font-medium">
-                                                                {course.name}
-                                                            </h3>
-                                                            <p className="text-sm text-gray-600">
-                                                                {
-                                                                    course.completedLessons
-                                                                }{' '}
-                                                                of{' '}
-                                                                {
-                                                                    course.totalLessons
-                                                                }{' '}
-                                                                lessons
-                                                                completed
-                                                            </p>
-                                                            <div
-                                                                value={
-                                                                    course.progress
-                                                                }
-                                                                className="mt-2 w-full"
-                                                            />
-                                                        </div>
-                                                        <button
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    `/learn/${course.id}`
-                                                                )
+                                            {courses?.map((course) => (
+                                                <div
+                                                    key={course}
+                                                    className="flex items-center justify-between p-4 border rounded-lg"
+                                                >
+                                                    <div className="flex-1">
+                                                        <h3 className="font-medium">
+                                                            {
+                                                                learningState[
+                                                                    course
+                                                                ]?.name
                                                             }
-                                                            className="ml-4"
-                                                        >
-                                                            Continue
-                                                        </button>
+                                                        </h3>
+                                                        <p className="text-sm text-gray-600">
+                                                            {
+                                                                learningState[
+                                                                    course
+                                                                ]
+                                                                    ?.completedLessons
+                                                                    ?.length
+                                                            }{' '}
+                                                            of{' '}
+                                                            {
+                                                                learningState[
+                                                                    course
+                                                                ]?.totalLessons
+                                                            }{' '}
+                                                            lessons completed
+                                                        </p>
                                                     </div>
-                                                ))}
+                                                    <button
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/courses/${course}`
+                                                            )
+                                                        }
+                                                        className="ml-4"
+                                                    >
+                                                        Continue
+                                                    </button>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
@@ -305,7 +269,7 @@ const UserPage = () => {
                             >
                                 <div className="space-y-6">
                                     <div>
-                                        <h3 className="text-bold">
+                                        <h3 className="flex items-center gap-2 font-medium font-bold">
                                             All Courses
                                         </h3>
 
@@ -318,23 +282,18 @@ const UserPage = () => {
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {courses.map((course) => (
                                                 <div
-                                                    key={course.id}
+                                                    key={course}
                                                     className="relative bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
                                                 >
                                                     <div>
                                                         <div className="flex items-start justify-between items-center">
                                                             <h3 className="flex items-center gap-2 font-medium font-bold">
-                                                                {course.name}
+                                                                {
+                                                                    learningState[
+                                                                        course
+                                                                    ]?.name
+                                                                }
                                                             </h3>
-                                                            <div
-                                                                className={`${getStatusColor(
-                                                                    course.status
-                                                                )} py-1 px-2 rounded-full text-white text-sm`}
-                                                            >
-                                                                {getStatusText(
-                                                                    course.status
-                                                                )}
-                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -345,9 +304,15 @@ const UserPage = () => {
                                                                     Progress
                                                                 </label>
                                                                 <span>
-                                                                    {
-                                                                        course.progress
-                                                                    }
+                                                                    {learningState[
+                                                                        course
+                                                                    ]
+                                                                        ?.totalLessons *
+                                                                        learningState[
+                                                                            course
+                                                                        ]
+                                                                            ?.completedLessons
+                                                                            ?.length}
                                                                     %
                                                                 </span>
                                                             </div>
@@ -356,7 +321,17 @@ const UserPage = () => {
                                                                 <div
                                                                     className="h-full bg-blue-600 transition-all duration-300"
                                                                     style={{
-                                                                        width: `${course.progress}%`,
+                                                                        width: `${
+                                                                            learningState[
+                                                                                course
+                                                                            ]
+                                                                                ?.totalLessons *
+                                                                            learningState[
+                                                                                course
+                                                                            ]
+                                                                                ?.completedLessons
+                                                                                ?.length
+                                                                        }%`,
                                                                     }}
                                                                 />
                                                             </div>
@@ -365,19 +340,29 @@ const UserPage = () => {
                                                         <div className="text-sm text-gray-600">
                                                             <p>
                                                                 {
-                                                                    course.completedLessons
+                                                                    learningState[
+                                                                        course
+                                                                    ]
+                                                                        ?.completedLessons
+                                                                        ?.length
                                                                 }{' '}
                                                                 of{' '}
                                                                 {
-                                                                    course.totalLessons
+                                                                    learningState[
+                                                                        course
+                                                                    ]
+                                                                        ?.totalLessons
                                                                 }{' '}
                                                                 lessons
                                                             </p>
                                                             <p>
                                                                 Last accessed:{' '}
-                                                                {
-                                                                    course.lastAccessed
-                                                                }
+                                                                {learningState[
+                                                                    course
+                                                                ]?.lastAccessed?.slice(
+                                                                    0,
+                                                                    10
+                                                                )}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -395,9 +380,9 @@ const UserPage = () => {
                                         : 'hidden'
                                 }`}
                             >
-                                <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow space-y-6">
                                     <div>
-                                        <h3 className="text-bold">
+                                        <h3 className="flex items-center gap-2 font-medium font-bold">
                                             Account Information
                                         </h3>
 
@@ -405,6 +390,7 @@ const UserPage = () => {
                                             Your account details
                                         </label>
                                     </div>
+
                                     <div className="space-y-4">
                                         <div>
                                             <label className="block text-sm/6 font-medium text-gray-900 justify-self-start">
@@ -429,7 +415,7 @@ const UserPage = () => {
 
                                 <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                                     <div>
-                                        <h3 className="text-bold">
+                                        <h3 className="flex items-center gap-2 font-medium font-bold">
                                             Change Password
                                         </h3>
 
@@ -438,7 +424,7 @@ const UserPage = () => {
                                         </label>
                                     </div>
 
-                                    <div className="mt-10 ">
+                                    <div className="mt-10">
                                         <div className="space-y-6">
                                             <div>
                                                 <div className="flex items-center justify-between">

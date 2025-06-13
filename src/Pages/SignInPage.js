@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Footer from '../Components/Footer'
 import Navbar from '../Components/Navbar'
 import { useNavigate } from 'react-router-dom'
@@ -7,6 +7,10 @@ import { setUser } from '../RTK/userSlice'
 import { supabase } from '../supabaseClient'
 
 const SignInPage = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errorDisplay, setErrorDisplay] = useState(null)
@@ -17,7 +21,6 @@ const SignInPage = () => {
     const handleSignIn = async () => {
         try {
             setErrorDisplay(null)
-            console.log('handleSignIn', email, password)
 
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
@@ -27,12 +30,10 @@ const SignInPage = () => {
                 console.error('Login error:', error.message)
                 setErrorDisplay(error.message)
             } else {
-                console.log('User signed in:', data)
-
                 fetchUserData(data?.user)
             }
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
@@ -45,8 +46,6 @@ const SignInPage = () => {
         if (error) {
             console.error('Fetch error:', error.message)
         } else {
-            console.log('Fetched data:', data)
-
             dispatch(
                 setUser({
                     id: sign_in_user?.id,
@@ -132,7 +131,6 @@ const SignInPage = () => {
                                             setPassword(e.target.value)
                                         }}
                                         className="block w-full rounded-full  bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 border border-blue-300"
-                                        // className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
                                     />
                                 </div>
                             </div>

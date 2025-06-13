@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Footer from '../Components/Footer'
 import Navbar from '../Components/Navbar'
 import { useNavigate } from 'react-router-dom'
@@ -7,6 +7,10 @@ import { setUser } from '../RTK/userSlice'
 import { supabase } from '../supabaseClient'
 
 const SignUpPage = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -22,8 +26,6 @@ const SignUpPage = () => {
             setPasswordError(false)
             if (password !== confirmPassword) return setPasswordError(true)
 
-            console.log('handleSignUp', email, password)
-
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
@@ -32,12 +34,10 @@ const SignUpPage = () => {
                 console.error('Login error:', error.message)
                 setErrorDisplay(error.message)
             } else {
-                console.log('User signed up:', data)
-
                 handleCreateUserData(data?.user)
             }
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 
@@ -57,19 +57,41 @@ const SignUpPage = () => {
             if (error) {
                 console.error('Insert error:', error.message)
             } else {
-                console.log(data)
-
-                dispatch(
-                    setUser({
-                        id: sign_up_user?.id,
-                        email: sign_up_user?.email,
-                        created: sign_up_user?.created_at,
-                        courses: data?.courses,
-                    })
-                )
+                if (data) {
+                    dispatch(
+                        setUser({
+                            id: sign_up_user?.id,
+                            email: sign_up_user?.email,
+                            created: sign_up_user?.created_at,
+                            courses: {
+                                javascript: {
+                                    id: 'javascript',
+                                    name: 'JavaScript',
+                                    totalLessons: 10,
+                                    completedLessons: 0,
+                                    lastAccessed: null,
+                                },
+                                python: {
+                                    id: 'python',
+                                    name: 'Python',
+                                    totalLessons: 10,
+                                    completedLessons: 0,
+                                    lastAccessed: null,
+                                },
+                                java: {
+                                    id: 'java',
+                                    name: 'Java',
+                                    totalLessons: 10,
+                                    completedLessons: 0,
+                                    lastAccessed: null,
+                                },
+                            },
+                        })
+                    )
+                }
             }
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
     }
 

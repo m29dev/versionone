@@ -4,9 +4,55 @@ import { useParams } from 'react-router-dom'
 import NavbarLearningMode from '../Components/NavbarLearningMode'
 import './LearningPage.css'
 import { supabase } from '../supabaseClient'
+import { useSelector } from 'react-redux'
 
 const LearningPage = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     const { id } = useParams()
+    const { user } = useSelector((state) => state.user)
+
+    // UPDATE lastAccessed
+    useEffect(() => {
+        // UPDATE USERDATA ONCE TRIGGERED
+        const update = async (fetchedData) => {
+            const UserDataClone = structuredClone(fetchedData?.[0])
+            let dataToUpdate = UserDataClone?.courses
+
+            const today = new Date().toISOString().split('T')[0]
+            dataToUpdate[id].lastAccessed = today
+
+            const { data, error } = await supabase
+                .from('UserData')
+                .update({ courses: dataToUpdate })
+                .eq('user_UID', user?.id)
+
+            if (error) {
+                console.error('Update error:', error.message)
+            }
+
+            if (!data) {
+                return
+            }
+        }
+
+        // FETCH CURRENT USERDATA
+        const fetchUserData = async () => {
+            const { data, error } = await supabase
+                .from('UserData')
+                .select('*')
+                .eq('user_UID', user?.id)
+
+            if (error) {
+                console.error('Fetch error:', error.message)
+            } else {
+                update(data)
+            }
+        }
+        fetchUserData()
+    }, [id, user])
 
     const translateId = {
         javascript: 1,
@@ -16,12 +62,9 @@ const LearningPage = () => {
 
     const course_id = translateId[id]
 
-    // const videos = videosLearning[id]
     const [videos, setVideos] = useState([])
 
     const fetchVideoData = useCallback(async () => {
-        console.log('fetching video data, id: ', course_id)
-
         const { data, error } = await supabase
             .from('VideosData')
             .select('*')
@@ -30,7 +73,6 @@ const LearningPage = () => {
         if (error) {
             console.error('Fetch error:', error.message)
         } else {
-            console.log('Fetched VideoData:', data)
             setVideos(data)
         }
     }, [course_id, setVideos])
@@ -81,7 +123,6 @@ const LearningPage = () => {
     }, [activeIndex])
 
     const handleVideoClick = useCallback(() => {
-        console.log('Video Click')
         setIsMuted((prev) => !prev)
     }, [])
 
@@ -204,8 +245,6 @@ const LearningPage = () => {
                 behavior: 'smooth',
             })
         }
-
-        // setIsMuted(true)
     }, [activeIndex])
 
     useEffect(() => {
@@ -249,10 +288,6 @@ const LearningPage = () => {
         handleTouchEnd,
         handleScroll,
     ])
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
 
     return (
         <div
