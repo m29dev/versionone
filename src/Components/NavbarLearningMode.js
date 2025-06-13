@@ -15,7 +15,7 @@ const NavbarLearningMode = ({ title }) => {
             <div className="max-w-7xl mx-auto flex flex-wrap justify-between  p-[1rem] md:p-[2rem] lg:p-[2rem]">
                 <div className="flex items-center">
                     <button
-                        className="bg-white text-blue-500 font-semibold px-3 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
+                        className="bg-white text-blue-500 font-semibold px-3 py-3 rounded-full cursor-pointer"
                         onClick={() => navigate('/courses')}
                     >
                         <ArrowLeft />
@@ -23,7 +23,7 @@ const NavbarLearningMode = ({ title }) => {
                 </div>
 
                 <div className="flex items-center">
-                    <span className="text-light font-bold text-xl">
+                    <span className="text-white font-bold text-xl">
                         {titleName}
                     </span>
                 </div>

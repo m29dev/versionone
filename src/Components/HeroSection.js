@@ -26,7 +26,7 @@ const HeroSection = () => {
                         <div className="flex flex-wrap gap-4 pt-4">
                             <button
                                 className="bg-transparent text-blue-600 font-semibold px-6 py-3 rounded-full border flex items-center gap-2 border-blue-300 hover:border-blue-600 cursor-pointer"
-                                onClick={() => navigate('/signin')}
+                                onClick={() => navigate('/courses')}
                             >
                                 Start Learning <ArrowRight />
                             </button>

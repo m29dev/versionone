@@ -21,9 +21,9 @@ const Navbar = () => {
         <nav className="bg-transparent backdrop-sm fixed w-full z-20 top-0 left-0 ">
             <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-[1rem] md:p-[2rem] lg:p-[2rem]">
                 <div className="flex items-center">
-                    <span className="text-primary font-bold cursor-pointer text-xl">
+                    <button className="bg-white text-blue-500 font-semibold px-6 py-4 rounded-full flex items-center gap-2">
                         version one
-                    </span>
+                    </button>
                 </div>
 
                 <div className="flex md:hidden">
@@ -39,14 +39,14 @@ const Navbar = () => {
                 <div
                     className={`${
                         mobileMenuOpen ? 'block' : 'hidden'
-                    } w-full md:block md:w-auto bg-[#ffffff] rounded-full`}
+                    } w-full md:block md:w-auto bg-[#ffffff] rounded-full py-5 px-6`}
                 >
                     <ul className="flex flex-col p-4  px-5 md:p-0 font-medium cursor-pointer md:flex-row md:space-x-8 md:mt-0 m-0">
                         <li>
                             <div
-                                className={`block py-2 pl-3 pr-4 md:p-0 ${
+                                className={`block py-2 pl-3 pr-4 md:p-0 text-bold ${
                                     url === '/'
-                                        ? 'text-primary'
+                                        ? 'text-blue-500'
                                         : 'text-gray-700'
                                 }`}
                                 onClick={() => navigate('/')}
@@ -58,7 +58,7 @@ const Navbar = () => {
                             <div
                                 className={`block py-2 pl-3 pr-4 md:p-0 ${
                                     url === '/courses'
-                                        ? 'text-primary'
+                                        ? 'text-blue-500'
                                         : 'text-gray-700'
                                 }`}
                                 onClick={() => navigate('/courses')}
@@ -70,7 +70,7 @@ const Navbar = () => {
                             <div
                                 className={`block py-2 pl-3 pr-4 md:p-0 ${
                                     url === '/quiz'
-                                        ? 'text-primary'
+                                        ? 'text-blue-500'
                                         : 'text-gray-700'
                                 }`}
                                 onClick={() => navigate('/quiz')}
@@ -85,7 +85,7 @@ const Navbar = () => {
                     <div className="hidden md:flex md:items-center md:space-x-4">
                         <div className="relative inline-block text-left">
                             <button
-                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full flex items-center gap-2 shadow cursor-pointer"
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-4 rounded-full flex items-center gap-2 shadow cursor-pointer"
                                 onClick={toggleDropdown}
                             >
                                 {user.email.slice(0, 1).toUpperCase()}
@@ -117,7 +117,7 @@ const Navbar = () => {
                 {!user && (
                     <div className="hidden md:flex md:items-center md:space-x-4">
                         <button
-                            className="bg-transparent text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer
+                            className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer
 "
                             onClick={() => navigate('/signin')}
                         >

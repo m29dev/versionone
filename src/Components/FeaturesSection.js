@@ -1,4 +1,4 @@
-import { BookOpen, Code, Users } from 'lucide-react'
+import { BookOpen, Code, Trophy } from 'lucide-react'
 
 const FeaturesSection = () => {
     const features = [
@@ -15,10 +15,10 @@ const FeaturesSection = () => {
                 'Reinforce your knowledge with interactive coding challenges and tests designed to help you master key programming concepts.',
         },
         {
-            icon: <Users className="h-10 w-10 text-primary" />,
-            title: 'Community Support',
+            icon: <Trophy className="w-10 h-10 text-primary" />,
+            title: 'Statistics',
             description:
-                'Join a thriving community of learners and mentors who will support you throughout your coding journey and celebrate your milestones.',
+                'Be on track with your coding journey, check your progress, certifications, awards and more.',
         },
     ]
 

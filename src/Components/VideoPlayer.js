@@ -1,8 +1,10 @@
-import { ArrowDownUp, Volume, Volume2 } from 'lucide-react'
+import { Volume, Volume2 } from 'lucide-react'
 import { useRef } from 'react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setVideo } from '../RTK/videoSlice'
+import { supabase } from '../supabaseClient'
+import { useParams } from 'react-router-dom'
 
 const VideoPlayer = ({ videoData, isActive }) => {
     const videoRef = useRef(null)
@@ -42,11 +44,8 @@ const VideoPlayer = ({ videoData, isActive }) => {
 
     const [displayUnmute, setDisplayUnmute] = useState(false)
     const [displayMute, setDisplayMute] = useState(false)
-    // const [displayInstruction, setDisplayInstruction] = useState(true)
 
     const handleVideoClick = () => {
-        // setIsMuted(!isMuted)
-        console.log('Video isMuted set to = ', !video?.isMuted)
         dispatch(setVideo({ isMuted: !video?.isMuted }))
 
         if (!video?.isMuted) {
@@ -70,6 +69,77 @@ const VideoPlayer = ({ videoData, isActive }) => {
         dispatch(setVideo({ isMuted: true, instructionState: true }))
     }, [dispatch])
 
+    const { id } = useParams()
+    const { user } = useSelector((state) => state.user)
+
+    useEffect(() => {
+        const currentVideo = videoRef.current
+
+        const handleVideoEnd = () => {
+            currentVideo.currentTime = 0
+            currentVideo?.play()
+
+            // UPDATE USERDATA ONCE TRIGGERED
+            const update = async (fetchedData) => {
+                if (
+                    fetchedData?.[0]?.courses?.[id]?.completedLessons?.includes(
+                        videoData?.id
+                    )
+                ) {
+                    return
+                }
+
+                const UserDataClone = structuredClone(fetchedData?.[0])
+                let dataToUpdate = UserDataClone?.courses
+                const currentCompletedLessons =
+                    dataToUpdate[id]?.completedLessons
+
+                dataToUpdate[id].completedLessons = [
+                    ...currentCompletedLessons,
+                    videoData?.id,
+                ]
+
+                const { data, error } = await supabase
+                    .from('UserData')
+                    .update({ courses: dataToUpdate })
+                    .eq('user_UID', user?.id)
+
+                if (error) {
+                    console.error('Update error:', error.message)
+                }
+
+                if (!data) {
+                    return
+                }
+            }
+
+            // FETCH CURRENT USERDATA
+            const fetchUserData = async () => {
+                const { data, error } = await supabase
+                    .from('UserData')
+                    .select('*')
+                    .eq('user_UID', user?.id)
+
+                if (error) {
+                    console.error('Fetch error:', error.message)
+                } else {
+                    update(data)
+                }
+            }
+            fetchUserData()
+        }
+
+        if (currentVideo) {
+            currentVideo.addEventListener('ended', handleVideoEnd)
+        }
+
+        return () => {
+            if (currentVideo) {
+                currentVideo.removeEventListener('ended', handleVideoEnd)
+            }
+        }
+    }, [videoData, id, user])
+
     return (
         <div
             ref={containerRef}
@@ -87,10 +157,9 @@ const VideoPlayer = ({ videoData, isActive }) => {
                 <video
                     src={videoData?.videoUrl}
                     ref={videoRef}
-                    // src="https://yifcxhnhkmklkxiodfvh.supabase.co/storage/v1/object/sign/videos/Chart%20Your%20JavaScript%20Mastery%20Embark%20on%20a%20Transformative%20Roadmap%20to%20Success!.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82ZGI4YmYxMC0wMmI4LTQzNmQtOThiZS00N2I3ZjQwZmE5ZGMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlb3MvQ2hhcnQgWW91ciBKYXZhU2NyaXB0IE1hc3RlcnkgRW1iYXJrIG9uIGEgVHJhbnNmb3JtYXRpdmUgUm9hZG1hcCB0byBTdWNjZXNzIS5tcDQiLCJpYXQiOjE3NDk1NTc2MjUsImV4cCI6MzE3MTA5NTU3NjI1fQ.3Jvr2jIr5YKclW1hAdO0woeiXeXCodceoSf6-VLd6sM"
                     autoPlay
                     muted={video?.isMuted}
-                    loop
+                    // loop
                     playsInline
                     className="w-full h-full object-cover"
                 />
@@ -102,24 +171,20 @@ const VideoPlayer = ({ videoData, isActive }) => {
                 {videoData?.description}
             </p>
 
-            {displayUnmute && (
+            {videoData?.videoUrl && displayUnmute && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <Volume2 className="w-32 h-32" />
                 </div>
             )}
 
-            {displayMute && (
+            {videoData?.videoUrl && displayMute && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <Volume className="w-32 h-32" />
                 </div>
             )}
 
-            {video?.instructionState && (
+            {videoData?.videoUrl && video?.instructionState && (
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <ArrowDownUp />
-
-                    <p>Swipe Up / Down</p>
-
                     <p>Tap to Mute / Unmute</p>
                 </div>
             )}
