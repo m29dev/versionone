@@ -197,7 +197,7 @@ const QuizPage = () => {
                                     </span>{' '}
                                 </p>
 
-                                <div className="hidden flex justify-center md:flex md:items-center md:space-x-4 pt-4">
+                                <div className="flex justify-center items-center md:flex-row md:items-center md:space-x-4 pt-4 flex-col mx-auto space-y-6 md:space-y-0">
                                     <button
                                         className="bg-transparent text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
                                         onClick={restartQuiz}
