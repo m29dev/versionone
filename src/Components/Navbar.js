@@ -1,22 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Menu } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearUser } from '../RTK/userSlice'
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate = useNavigate()
     const { pathname: url } = useLocation()
     const { user } = useSelector((state) => state.user)
+    const dispatch = useDispatch()
+    const [isOpen, setIsOpen] = useState(false)
+    const toggleDropdown = () => setIsOpen(!isOpen)
 
-    useEffect(() => {
-        console.log('test')
-        console.log(url.pathname)
-    }, [url])
-
-    useEffect(() => {
-        console.log(user)
-    }, [user])
+    const handleSignOut = () => {
+        dispatch(clearUser())
+    }
 
     return (
         <nav className="bg-transparent backdrop-sm fixed w-full z-20 top-0 left-0 ">
@@ -84,13 +83,34 @@ const Navbar = () => {
 
                 {user && (
                     <div className="hidden md:flex md:items-center md:space-x-4">
-                        <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full flex items-center gap-2 shadow cursor-pointer
-"
-                            onClick={() => navigate('/user')}
-                        >
-                            {user.email.slice(0, 1).toUpperCase()}
-                        </button>
+                        <div className="relative inline-block text-left">
+                            <button
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full flex items-center gap-2 shadow cursor-pointer"
+                                onClick={toggleDropdown}
+                            >
+                                {user.email.slice(0, 1).toUpperCase()}
+                            </button>
+
+                            {isOpen && (
+                                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10 flex-col justify-center align-center text-center">
+                                    <button
+                                        className="px-4 py-2 text-center hover:bg-gray-100"
+                                        onClick={() =>
+                                            navigate('/user/overview')
+                                        }
+                                    >
+                                        User
+                                    </button>
+
+                                    <button
+                                        className="px-4 py-2 text-center hover:bg-gray-100"
+                                        onClick={handleSignOut}
+                                    >
+                                        Sign Out
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
 

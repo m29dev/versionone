@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Menu, ArrowLeft } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const NavbarLearningMode = ({ title }) => {
     const navigate = useNavigate()
@@ -10,10 +9,6 @@ const NavbarLearningMode = ({ title }) => {
         java: 'Java',
     }
     const titleName = titleObject[title]
-
-    useEffect(() => {
-        console.log(titleName)
-    }, [titleName])
 
     return (
         <nav className="bg-transparent fixed w-full z-20 top-0 left-0 ">

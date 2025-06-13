@@ -17,10 +17,6 @@ const HeroSection = () => {
                             of yourself.
                         </h1>
 
-                        {/* <h1 className="text-5xl font-bold bg-gradient-to-r from-sky-500 via-fuchsia-400 to-rose-400 bg-clip-text text-transparent text-center">
-                            Clarity. Focus. Impact.
-                        </h1> */}
-
                         <p className="font-bold text-lg text-gray-600 max-w-lg text-xl md:text-2xl lg:text-2xl pt-4 text-center">
                             Master coding skills through short video courses,
                             knowledge tests, and a supportive community ready to
