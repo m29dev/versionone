@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setVideo } from '../RTK/videoSlice'
 import { supabase } from '../supabaseClient'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const VideoPlayer = ({ videoData, isActive }) => {
     const videoRef = useRef(null)
@@ -140,6 +140,8 @@ const VideoPlayer = ({ videoData, isActive }) => {
         }
     }, [videoData, id, user])
 
+    const navigate = useNavigate()
+
     return (
         <div
             ref={containerRef}
@@ -165,7 +167,29 @@ const VideoPlayer = ({ videoData, isActive }) => {
                 />
             )}
 
-            {!videoData?.videoUrl && <div>Video URL error</div>}
+            {!videoData?.videoUrl && videoData?.id !== 'test' && (
+                <div>Video URL error</div>
+            )}
+
+            {videoData?.id === 'test' && (
+                <div className="flex flex-col justify-center items-center text-center">
+                    <h4 className="mb-4">
+                        You've watched all videos for this course. Now it's time
+                        to check your knowledge!
+                    </h4>
+
+                    <div className="flex justify-center text-xl">
+                        <button
+                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full shadow cursor-pointer"
+                            onClick={() => {
+                                navigate('test')
+                            }}
+                        >
+                            Test
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <p className="absolute bottom-4 left-4 text-sm text-gray-400">
                 {videoData?.description}

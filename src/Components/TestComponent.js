@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react'
+import { CheckCircle } from 'lucide-react'
+import { supabase } from '../supabaseClient'
+import { useSelector } from 'react-redux'
 
 const courseTests = {
     javascript: [
@@ -125,219 +127,161 @@ const courseTests = {
     ],
 }
 
-const TestComponent = ({ courseId, onTestComplete, onBack }) => {
+const TestComponent = ({ courseId }) => {
+    const questions = courseTests[courseId] || []
     const navigate = useNavigate()
 
-    const questions = courseTests[courseId] || []
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answers, setAnswers] = useState([])
-    const [selectedAnswer, setSelectedAnswer] = useState(null)
     const [showResults, setShowResults] = useState(false)
     const [score, setScore] = useState(0)
 
-    const handleAnswerSelect = (value) => {
-        setSelectedAnswer(parseInt(value))
-    }
-
-    const handleNext = () => {
-        if (selectedAnswer === null) return
-
+    const handleAnswerClick = (selected) => {
         const newAnswers = [...answers]
-        newAnswers[currentQuestion] = selectedAnswer
+        newAnswers[currentQuestion] = selected
         setAnswers(newAnswers)
 
         if (currentQuestion < questions.length - 1) {
             setCurrentQuestion(currentQuestion + 1)
-            setSelectedAnswer(newAnswers[currentQuestion + 1] ?? null)
         } else {
             calculateScore(newAnswers)
         }
     }
 
-    const handleBack = () => {
-        if (currentQuestion > 0) {
-            setCurrentQuestion(currentQuestion - 1)
-            setSelectedAnswer(answers[currentQuestion - 1] ?? null)
-        }
-    }
-
+    const { user } = useSelector((state) => state.user)
     const calculateScore = (allAnswers) => {
-        let correct = 0
-        allAnswers.forEach((answer, index) => {
-            if (answer === questions[index].correctAnswer) {
-                correct++
-            }
-        })
-
+        const correct = allAnswers.filter(
+            (ans, idx) => ans === questions[idx].correctAnswer
+        ).length
         const finalScore = Math.round((correct / questions.length) * 100)
         setScore(finalScore)
         setShowResults(true)
-        onTestComplete(finalScore)
+
+        if (finalScore < 75) return
+
+        // save results to UserData
+        // UPDATE USERDATA ONCE TRIGGERED
+        const update = async (fetchedData) => {
+            const userDataClone = structuredClone(fetchedData?.[0])
+            const userCoursesUpdate = userDataClone?.courses
+            userCoursesUpdate[courseId].certificationTest = finalScore
+
+            const { data, error } = await supabase
+                .from('UserData')
+                .update({ courses: userCoursesUpdate })
+                .eq('user_UID', user?.id)
+
+            if (error) {
+                console.error('Update error:', error.message)
+            }
+
+            if (!data) {
+                return
+            }
+        }
+
+        // FETCH CURRENT USERDATA
+        const fetchUserData = async () => {
+            const { data, error } = await supabase
+                .from('UserData')
+                .select('*')
+                .eq('user_UID', user?.id)
+
+            if (error) {
+                console.error('Fetch error:', error.message)
+            } else {
+                update(data)
+            }
+        }
+        fetchUserData()
     }
 
-    const getScoreColor = (score) => {
-        if (score >= 80) return 'text-green-600'
-        if (score >= 60) return 'text-yellow-600'
-        return 'text-red-600'
+    const handleResetTest = () => {
+        setCurrentQuestion(0)
+        setAnswers([])
+        setShowResults(false)
+        setScore(0)
     }
 
-    const getScoreMessage = (score) => {
-        if (score >= 80) return "Excellent work! You've mastered this course."
-        if (score >= 60)
-            return 'Good job! You might want to review some topics.'
-        return 'Keep studying! Consider rewatching some videos.'
-    }
-
-    if (questions.length === 0) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="w-full max-w-md">
-                    <div className="text-center p-6">
-                        <h2 className="text-xl font-bold mb-4">
-                            No test available
-                        </h2>
-                        <button onClick={onBack}>Go Back</button>
-                    </div>
-                </div>
-            </div>
-        )
-    }
+    if (questions.length === 0) return <div>No test available</div>
 
     if (showResults) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center p-4">
-                <div className="w-full max-w-2xl">
-                    <div className="text-center">
-                        <div className="mx-auto mb-4">
-                            <CheckCircle className="w-16 h-16 text-green-500" />
-                        </div>
-                        <div className="text-2xl">Test Complete!</div>
-                    </div>
-                    <div className="text-center space-y-6">
-                        <div>
-                            <p
-                                className={`text-4xl font-bold ${getScoreColor(
-                                    score
-                                )}`}
-                            >
-                                {score}%
-                            </p>
-                            <p className="text-lg text-gray-600 mt-2">
-                                {
-                                    answers.filter(
-                                        (answer, index) =>
-                                            answer ===
-                                            questions[index].correctAnswer
-                                    ).length
-                                }{' '}
-                                out of {questions.length} correct
-                            </p>
-                        </div>
+            <div className="p-6 text-center pt-64 space-y-6">
+                {score >= 75 && (
+                    <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                )}
 
-                        <p className="text-lg">{getScoreMessage(score)}</p>
+                <h2 className="text-2xl font-semibold mb-2">Test Complete!</h2>
+                <p className="text-4xl font-bold">{score}%</p>
+                <p className="text-gray-600">
+                    {
+                        answers.filter(
+                            (a, i) => a === questions[i].correctAnswer
+                        ).length
+                    }{' '}
+                    of {questions.length} correct
+                </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button
-                                onClick={() => navigate('/courses')}
-                                className="bg-primary hover:bg-primary/90"
-                            >
-                                Browse More Courses
-                            </button>
-                            <button variant="outline" onClick={onBack}>
-                                Back to Course
-                            </button>
-                        </div>
+                {score < 75 && (
+                    <div className="space-y-6">
+                        {' '}
+                        <p>
+                            To receive certificate, you need to get 75% or more
+                        </p>
+                        <button
+                            className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
+                            onClick={handleResetTest}
+                        >
+                            Try again
+                        </button>
                     </div>
-                </div>
+                )}
+
+                {score >= 75 && (
+                    <div>
+                        {' '}
+                        <p>You've received certificate!</p>
+                        <button
+                            className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
+                            onClick={() => {
+                                navigate('/courses')
+                            }}
+                        >
+                            Courses
+                        </button>
+                    </div>
+                )}
             </div>
         )
     }
 
-    const progress = ((currentQuestion + 1) / questions.length) * 100
     const currentQ = questions[currentQuestion]
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl">
-                <div>
-                    <div className="flex items-center justify-between mb-4">
-                        <button
-                            variant="ghost"
-                            size="icon"
-                            onClick={
-                                currentQuestion === 0 ? onBack : handleBack
-                            }
-                        >
-                            <ArrowLeft className="w-5 h-5" />
-                        </button>
-                        <div className="capitalize">{courseId} Course Test</div>
-                        <div className="w-10" />
-                    </div>
+        <div className="pt-64 max-w-xl mx-auto">
+            <div className="mb-4 flex justify-between items-center">
+                <span>
+                    Question {currentQuestion + 1} / {questions.length}
+                </span>
+                <div />
+            </div>
 
-                    <div>
-                        <div className="flex justify-between text-sm text-gray-600 mb-2">
-                            <span>
-                                Question {currentQuestion + 1} of{' '}
-                                {questions.length}
-                            </span>
-                            <span>{Math.round(progress)}% Complete</span>
-                        </div>
-                        <div value={progress} className="h-2" />
-                    </div>
-                </div>
+            <h2 className="text-xl font-semibold mb-6">{currentQ.question}</h2>
 
-                <div className="space-y-6">
-                    <div>
-                        <p className="text-sm text-gray-500 mb-2">
-                            Based on: {currentQ.videoTitle}
-                        </p>
-                        <h2 className="text-xl font-semibold mb-6">
-                            {currentQ.question}
-                        </h2>
-                    </div>
-
+            <div className="space-y-4">
+                {currentQ.options.map((option, index) => (
                     <div
-                        value={selectedAnswer?.toString() || ''}
-                        onValueChange={handleAnswerSelect}
-                        className="space-y-3"
+                        key={index}
+                        onClick={() => handleAnswerClick(index)}
+                        className="p-4 border rounded-lg cursor-pointer hover:bg-gray-100 transition"
                     >
-                        {currentQ.options.map((option, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-gray-50 transition-colors"
-                            >
-                                <div
-                                    value={index.toString()}
-                                    id={`option-${index}`}
-                                />
-                                <label
-                                    htmlFor={`option-${index}`}
-                                    className="flex-1 cursor-pointer"
-                                >
-                                    <span className="font-medium mr-2">
-                                        {String.fromCharCode(65 + index)}.
-                                    </span>
-                                    {option}
-                                </label>
-                            </div>
-                        ))}
+                        <span className="font-medium mr-2">
+                            {String.fromCharCode(65 + index)}.
+                        </span>
+                        {option}
                     </div>
-
-                    <div className="flex justify-end">
-                        <button
-                            onClick={handleNext}
-                            disabled={selectedAnswer === null}
-                            className="bg-primary hover:bg-primary/90"
-                        >
-                            {currentQuestion === questions.length - 1
-                                ? 'Finish Test'
-                                : 'Next Question'}
-                            {currentQuestion < questions.length - 1 && (
-                                <ArrowRight className="w-4 h-4 ml-2" />
-                            )}
-                        </button>
-                    </div>
-                </div>
+                ))}
             </div>
         </div>
     )

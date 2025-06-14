@@ -37,10 +37,7 @@ const UserPage = () => {
     useEffect(() => {
         let count1 = 0
         courses.map((course) => {
-            if (
-                learningState?.[course]?.completedLessons ===
-                learningState?.[course]?.totalLessons
-            ) {
+            if (learningState?.[course]?.certificationTest >= 75) {
                 return (count1 += 1)
             } else {
                 return null

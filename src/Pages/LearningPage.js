@@ -73,7 +73,7 @@ const LearningPage = () => {
         if (error) {
             console.error('Fetch error:', error.message)
         } else {
-            setVideos(data)
+            setVideos([...data, { id: 'test' }])
         }
     }, [course_id, setVideos])
 
@@ -310,6 +310,34 @@ const LearningPage = () => {
                         isMuted={isMuted}
                     />
                 ))}
+
+                {/* {videos.map((video, index) =>
+                    video.id === 'test' ? (
+                        <div key={video.id}>
+                            <div className="flex justify-center">
+                                <h1>
+                                    You've watched all videos for this cours.
+                                    Now it's time to check your knowledge!
+                                </h1>
+                                <button
+                                    className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
+                                    onClick={() => {
+                                        navigate('/test')
+                                    }}
+                                >
+                                    Start Test
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <VideoPlayer
+                            key={video.id}
+                            videoData={video}
+                            isActive={index === activeIndex}
+                            isMuted={isMuted}
+                        />
+                    )
+                )} */}
             </main>
         </div>
     )

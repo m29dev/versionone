@@ -7,6 +7,7 @@ import CoursesPage from './Pages/CoursesPage'
 import LearningPage from './Pages/LearningPage'
 import QuizPage from './Pages/QuizPage'
 import UserPage from './Pages/UserPage'
+import TestPage from './Pages/TestPage'
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/user/:id" element={<UserPage />} />
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/courses/:id" element={<LearningPage />} />
+                <Route path="/courses/:id/test" element={<TestPage />} />
                 <Route path="/quiz" element={<QuizPage />} />
             </Routes>
         </Router>
