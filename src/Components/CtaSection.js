@@ -4,18 +4,18 @@ const CtaSection = () => {
     const navigate = useNavigate()
     return (
         <section className="py-20">
-            <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <div className="max-w-7xl mx-auto ">
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                     <div className="md:flex ">
                         <div className="p-8 md:p-12 lg:p-16 md:w-3/5 flex flex-col items-center">
-                            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                            <h2 className="text-3xl md:text-3xl font-bold text-gray-700 mb-4 text-center">
                                 Ready to Start Your Coding Journey?
                             </h2>
 
                             <button
                                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full flex items-center gap-2 shadow cursor-pointer
 "
-                                onClick={() => navigate('/signup')}
+                                onClick={() => navigate('/courses')}
                             >
                                 Browse Courses
                             </button>

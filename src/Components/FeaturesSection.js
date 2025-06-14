@@ -1,4 +1,5 @@
 import { BookOpen, Code, Trophy } from 'lucide-react'
+import CtaSection from './CtaSection'
 
 const FeaturesSection = () => {
     const features = [
@@ -23,7 +24,7 @@ const FeaturesSection = () => {
     ]
 
     return (
-        <section id="courses" className="feature-gradient py-20">
+        <section className="md:min-h-[100vh] flex justify-center items-center">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
@@ -31,7 +32,7 @@ const FeaturesSection = () => {
                     </h2>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                         Our platform combines engaging content, practical
-                        challenges, and a supportive community.
+                        challenges, and statistics.
                     </p>
                 </div>
 
@@ -57,6 +58,7 @@ const FeaturesSection = () => {
                         </div>
                     ))}
                 </div>
+                <CtaSection />
             </div>
         </section>
     )

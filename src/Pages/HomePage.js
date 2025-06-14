@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import Navbar from '../Components/Navbar'
 import HeroSection from '../Components/HeroSection'
 import FeaturesSection from '../Components/FeaturesSection'
-import CtaSection from '../Components/CtaSection'
 import Footer from '../Components/Footer'
 
 const HomePage = () => {
@@ -16,7 +15,6 @@ const HomePage = () => {
             <main className="flex-grow">
                 <HeroSection />
                 <FeaturesSection />
-                <CtaSection />
             </main>
             <Footer />
         </div>
