@@ -11,24 +11,6 @@ const NavbarLearningMode = ({ title }) => {
     const titleName = titleObject[title]
 
     return (
-        // <nav className="bg-transparent fixed w-full z-20 top-0 left-0 ">
-        //     <div className="max-w-7xl mx-auto flex flex-wrap justify-between  p-[1rem] md:p-[2rem] lg:p-[2rem]">
-        //         <div className="flex items-center">
-        //             <button
-        //                 className="bg-white text-blue-500 font-semibold px-3 py-3 rounded-full cursor-pointer"
-        //                 onClick={() => navigate('/courses')}
-        //             >
-        //                 <ArrowLeft />
-        //             </button>
-        //         </div>
-
-        //         <div className="flex items-center">
-        //             <span className="text-white font-bold text-xl">
-        //                 {titleName}
-        //             </span>
-        //         </div>
-        //     </div>
-        // </nav>
         <nav className="bg-transparent fixed w-full z-20 top-0 left-0 ">
             <div className="max-w-7xl m-auto flex flex-wrap items-center justify-center pt-[1rem] md:p-[2rem] lg:p-[2rem]">
                 <div
