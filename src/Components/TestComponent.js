@@ -266,9 +266,7 @@ const TestComponent = ({ courseId }) => {
                 </span>
                 <div />
             </div>
-
             <h2 className="text-xl font-semibold mb-6">{currentQ.question}</h2>
-
             <div className="space-y-4">
                 {currentQ.options.map((option, index) => (
                     <div
