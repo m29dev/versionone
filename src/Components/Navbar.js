@@ -16,10 +16,10 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="bg-transparent fixed w-full z-20 top-0 left-0 ">
+        <nav className="bg-transparent fixed w-full z-20 top-0 left-0">
             <div className="max-w-7xl m-auto flex flex-wrap items-center justify-center pt-[1rem] md:p-[2rem] lg:p-[2rem]">
                 <div
-                    className={`w-full block w-auto bg-[#ffffff] rounded-full md:py-5 md:px-6`}
+                    className={`w-full block w-auto bg-[#ffffff] rounded-full md:py-5 md:px-6 shadow`}
                 >
                     <ul className="p-4 md:px-5 md:p-0 font-medium cursor-pointer md:space-x-8 md:mt-0 m-0 text-center flex items-center justify-center">
                         <li>
@@ -68,32 +68,24 @@ const Navbar = () => {
                                 Quiz
                             </div>
                         </li>
+
                         {!user && (
-                            <li className="block md:hidden">
-                                <div
-                                    className={`block md:hidden py-2 pl-3 pr-4 md:p-0 ${
-                                        url === '/quiz'
-                                            ? 'text-blue-500'
-                                            : 'text-gray-700'
-                                    }`}
+                            <li className="flex md:items-center md:space-x-4 ml-0">
+                                <button
+                                    className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer
+"
                                     onClick={() => navigate('/signin')}
                                 >
                                     Sign In
-                                </div>
-                            </li>
-                        )}
-                        {!user && (
-                            <li className="hidden md:block">
-                                <div
-                                    className={`block md:hidden py-2 pl-3 pr-4 md:p-0 ${
-                                        url === '/quiz'
-                                            ? 'text-blue-500'
-                                            : 'text-gray-700'
-                                    }`}
+                                </button>
+
+                                <button
+                                    className="hidden md:flex bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full items-center gap-2 shadow cursor-pointer
+"
                                     onClick={() => navigate('/signup')}
                                 >
                                     Sign Up
-                                </div>
+                                </button>
                             </li>
                         )}
 
@@ -101,7 +93,7 @@ const Navbar = () => {
                             <div className="flex md:items-center md:space-x-4">
                                 <div className="relative inline-block text-left">
                                     <button
-                                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-4 rounded-full flex items-center gap-2 shadow cursor-pointer"
+                                        className="bg-white hover:bg-white-600 text-blue-500 font-semibold px-6 py-4 rounded-full flex items-center gap-2 shadow cursor-pointer"
                                         onClick={toggleDropdown}
                                     >
                                         {user.email.slice(0, 1).toUpperCase()}
@@ -127,26 +119,6 @@ const Navbar = () => {
                                         </div>
                                     )}
                                 </div>
-                            </div>
-                        )}
-
-                        {!user && (
-                            <div className="hidden md:flex md:items-center md:space-x-4">
-                                <button
-                                    className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer
-"
-                                    onClick={() => navigate('/signin')}
-                                >
-                                    Sign In
-                                </button>
-
-                                <button
-                                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full flex items-center gap-2 shadow cursor-pointer
-"
-                                    onClick={() => navigate('/signup')}
-                                >
-                                    Sign Up
-                                </button>
                             </div>
                         )}
                     </ul>

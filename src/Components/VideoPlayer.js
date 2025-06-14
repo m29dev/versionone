@@ -172,19 +172,19 @@ const VideoPlayer = ({ videoData, isActive }) => {
             </p>
 
             {videoData?.videoUrl && displayUnmute && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/50 rounded-full md:py-5 md:px-6">
                     <Volume2 className="w-32 h-32" />
                 </div>
             )}
 
             {videoData?.videoUrl && displayMute && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/50 rounded-full md:py-5 md:px-6">
                     <Volume className="w-32 h-32" />
                 </div>
             )}
 
             {videoData?.videoUrl && video?.instructionState && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/50 rounded-full md:py-5 md:px-6">
                     <p>Tap to Mute / Unmute</p>
                 </div>
             )}
