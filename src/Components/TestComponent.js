@@ -207,7 +207,7 @@ const TestComponent = ({ courseId }) => {
 
     if (showResults) {
         return (
-            <div className="p-6 text-center pt-64 space-y-6">
+            <div className="p-6 text-center space-y-6">
                 {score >= 75 && (
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
                 )}
@@ -227,7 +227,7 @@ const TestComponent = ({ courseId }) => {
                     <div className="space-y-6">
                         {' '}
                         <p>
-                            To receive certificate, you need to get 75% or more
+                            To receive certificate, you need to get at least 75%
                         </p>
                         <button
                             className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
@@ -259,27 +259,31 @@ const TestComponent = ({ courseId }) => {
     const currentQ = questions[currentQuestion]
 
     return (
-        <div className="pt-64 max-w-xl mx-auto">
-            <div className="mb-4 flex justify-between items-center">
-                <span>
-                    Question {currentQuestion + 1} / {questions.length}
-                </span>
-                <div />
-            </div>
-            <h2 className="text-xl font-semibold mb-6">{currentQ.question}</h2>
-            <div className="space-y-4">
-                {currentQ.options.map((option, index) => (
-                    <div
-                        key={index}
-                        onClick={() => handleAnswerClick(index)}
-                        className="p-4 border rounded-lg cursor-pointer hover:bg-gray-100 transition"
-                    >
-                        <span className="font-medium mr-2">
-                            {String.fromCharCode(65 + index)}.
-                        </span>
-                        {option}
-                    </div>
-                ))}
+        <div className="pt-[88px] max-w-xl mx-auto">
+            <div className="m-4">
+                <div className="mb-4 flex justify-between items-center">
+                    <span>
+                        Question {currentQuestion + 1} / {questions.length}
+                    </span>
+                    <div />
+                </div>
+                <h2 className="text-xl font-semibold mb-6">
+                    {currentQ.question}
+                </h2>
+                <div className="space-y-4">
+                    {currentQ.options.map((option, index) => (
+                        <div
+                            key={index}
+                            onClick={() => handleAnswerClick(index)}
+                            className="p-4 border rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                        >
+                            <span className="font-medium mr-2">
+                                {String.fromCharCode(65 + index)}.
+                            </span>
+                            {option}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     )

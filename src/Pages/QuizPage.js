@@ -69,33 +69,44 @@ const QuizPage = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
-            <main className="flex-grow">
-                <div className="min-h-screen flex items-center justify-center p-6">
-                    <div className="rounded-xl w-full  max-w-7xl p-8">
-                        {!result ? (
+            <main className="flex-grow flex items-center justify-center">
+                <div className="pt-[88px] max-w-xl mx-auto">
+                    <div className="m-4">
+                        {!result && (
                             <>
-                                <h2 className="text-2xl font-semibold mb-4">
-                                    Question {currentQuestion + 1} of{' '}
-                                    {questions?.length}
-                                </h2>
-                                <p className="text-lg mb-6">
+                                <div className="mb-4 flex justify-between items-center">
+                                    <span>
+                                        Question {currentQuestion + 1} of{' '}
+                                        {questions?.length}
+                                    </span>
+                                    <div />
+                                </div>
+                                <h2 className="text-xl font-semibold mb-6">
                                     {questions?.[currentQuestion]?.question}
-                                </p>
+                                </h2>
                                 <div className="space-y-4">
                                     {questions?.[
                                         currentQuestion
                                     ]?.options?.data?.map((option, index) => (
-                                        <button
+                                        <div
                                             key={index}
                                             onClick={() => handleAnswer(option)}
-                                            className="w-full text-left px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-100 transition"
+                                            className="p-4 border rounded-lg cursor-pointer hover:bg-gray-100 transition"
                                         >
+                                            <span className="font-medium mr-2">
+                                                {String.fromCharCode(
+                                                    65 + index
+                                                )}
+                                                .
+                                            </span>
                                             {option.text}
-                                        </button>
+                                        </div>
                                     ))}
                                 </div>
                             </>
-                        ) : (
+                        )}
+
+                        {result && (
                             <div className="text-center">
                                 <p className="font-bold text-lg text-gray-600 text-xl md:text-2xl lg:text-2xl pt-4 text-center">
                                     Based on the quiz, our recommendation is{' '}

@@ -21,6 +21,7 @@ const CoursesPage = () => {
             console.error('Fetch error:', error.message)
         } else {
             setCourses(data)
+            console.log(data)
         }
     }, [])
 

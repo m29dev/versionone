@@ -73,7 +73,11 @@ const UserPage = () => {
             if (error) {
                 setErrorResponseDisplay(error.message)
             } else {
-                if (data) setSuccessDisplay('Password changed successfully')
+                if (data) {
+                    setSuccessDisplay('Password changed successfully')
+                    setPassword('')
+                    setConfirmPassword('')
+                }
             }
         } catch (err) {
             setErrorResponseDisplay('Server error')
@@ -89,7 +93,7 @@ const UserPage = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
-            <main className="flex-grow pt-40">
+            <main className="flex-grow mt-[110px] md:mt-[168px]">
                 <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 max-w-7xl mx-auto px-4 md:px-6">
                     <div className="max-w-7xl mx-auto ">
                         <div className="space-y-6">

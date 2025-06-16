@@ -11,23 +11,23 @@ const NavbarLearningMode = ({ title }) => {
     const titleName = titleObject[title]
 
     return (
-        <nav className="bg-transparent fixed w-full z-20 top-0 left-0 ">
-            <div className="max-w-7xl m-auto flex flex-wrap items-center justify-center pt-[1rem] md:p-[2rem] lg:p-[2rem]">
-                <div
-                    className={`w-full block w-auto bg-white/50 rounded-full md:py-5 md:px-6`}
-                >
-                    <ul className="md:p-0 font-medium cursor-pointer md:space-x-8 md:mt-0 m-0 text-center flex items-center justify-center text-white">
-                        <button
-                            className="text-white font-semibold rounded-full cursor-pointer"
-                            onClick={() => navigate('/courses')}
-                        >
-                            <ArrowLeft className="w-10 h-10" />
-                        </button>
+        <nav className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full w-screen z-20 max-w-2xl m-auto flex items-center justify-center">
+            <ul className="flex items-center justify-between bg-transparent cursor-pointer font-medium text-center p-4 w-full">
+                <li>
+                    <div
+                        className="w-14 h-14 shadow rounded-full p-3"
+                        onClick={() => navigate('/courses')}
+                    >
+                        <ArrowLeft className="w-full h-full text-blue-500/90" />
+                    </div>
+                </li>
 
-                        <li>{titleName}</li>
-                    </ul>
-                </div>
-            </div>
+                <li>
+                    <div className="text-blue-500/90 shadow flex justify-center items-center rounded-full px-6 h-[56px]">
+                        {titleName}
+                    </div>
+                </li>
+            </ul>
         </nav>
     )
 }

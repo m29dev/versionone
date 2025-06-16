@@ -8,3 +8,8 @@ body,
     margin: 0;
     background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
 }
+
+.text-outline {
+    color: white;
+    -webkit-text-stroke: 1px rgb(235, 235, 235);
+}

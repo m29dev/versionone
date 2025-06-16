@@ -151,7 +151,7 @@ const VideoPlayer = ({ videoData, isActive }) => {
         flex items-center justify-center
         text-white text-3xl font-bold
         relative
-        ${isActive ? 'bg-black' : 'bg-gray-800'}
+        ${isActive ? 'bg-transparent' : 'bg-gray-100'}
         snap-start
       `}
         >
@@ -163,7 +163,7 @@ const VideoPlayer = ({ videoData, isActive }) => {
                     muted={video?.isMuted}
                     // loop
                     playsInline
-                    className="w-full h-full object-cover"
+                    className="w-screen h-screen"
                 />
             )}
 
@@ -191,24 +191,24 @@ const VideoPlayer = ({ videoData, isActive }) => {
                 </div>
             )}
 
-            <p className="absolute bottom-4 left-4 text-sm text-gray-400">
+            <p className="absolute bottom-4 left-6 text-sm text-gray-400">
                 {videoData?.description}
             </p>
 
             {videoData?.videoUrl && displayUnmute && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/50 rounded-full md:py-5 md:px-6">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-outline text-bold shadow rounded-full p-3 md:py-5 md:px-6">
                     <Volume2 className="w-32 h-32" />
                 </div>
             )}
 
             {videoData?.videoUrl && displayMute && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/50 rounded-full md:py-5 md:px-6">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-outline text-bold shadow rounded-full p-3 md:py-5 md:px-6">
                     <Volume className="w-32 h-32" />
                 </div>
             )}
 
             {videoData?.videoUrl && video?.instructionState && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/50 rounded-full md:py-5 md:px-6">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-outline text-bold shadow rounded-full p-3 md:py-5 md:px-6">
                     <p>Tap to Mute / Unmute</p>
                 </div>
             )}
