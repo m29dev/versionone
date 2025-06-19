@@ -1,140 +1,39 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { CheckCircle } from 'lucide-react'
 import { supabase } from '../supabaseClient'
 import { useSelector } from 'react-redux'
 
-const courseTests = {
-    javascript: [
-        {
-            id: 1,
-            question:
-                'Which of the following is NOT a primitive data type in JavaScript?',
-            options: ['string', 'number', 'array', 'boolean'],
-            correctAnswer: 2,
-            videoTitle: 'Variables and Data Types',
-        },
-        {
-            id: 2,
-            question:
-                'What is the correct way to declare a function in JavaScript?',
-            options: [
-                'function myFunc() {}',
-                'def myFunc():',
-                'func myFunc() {}',
-                'function: myFunc() {}',
-            ],
-            correctAnswer: 0,
-            videoTitle: 'Functions Basics',
-        },
-        {
-            id: 3,
-            question:
-                "How do you access the first element of an array named 'arr'?",
-            options: ['arr(0)', 'arr[1]', 'arr[0]', 'arr.first()'],
-            correctAnswer: 2,
-            videoTitle: 'Arrays and Objects',
-        },
-        {
-            id: 4,
-            question: 'Which loop is best for iterating over an array?',
-            options: [
-                'while loop',
-                'do-while loop',
-                'for loop',
-                'all are equally good',
-            ],
-            correctAnswer: 2,
-            videoTitle: 'Loops and Conditionals',
-        },
-        {
-            id: 5,
-            question:
-                'Which method is used to select an element by its ID in the DOM?',
-            options: [
-                'document.querySelector()',
-                'document.getElementById()',
-                'document.getElement()',
-                'document.findById()',
-            ],
-            correctAnswer: 1,
-            videoTitle: 'DOM Manipulation',
-        },
-    ],
-    python: [
-        {
-            id: 1,
-            question: 'Which symbol is used to start a comment in Python?',
-            options: ['//', '/*', '#', '--'],
-            correctAnswer: 2,
-            videoTitle: 'Python Syntax Basics',
-        },
-        {
-            id: 2,
-            question: 'How do you add an item to the end of a list in Python?',
-            options: [
-                'list.add()',
-                'list.append()',
-                'list.insert()',
-                'list.push()',
-            ],
-            correctAnswer: 1,
-            videoTitle: 'Lists and Dictionaries',
-        },
-        {
-            id: 3,
-            question: 'What keyword is used to define a function in Python?',
-            options: ['function', 'def', 'func', 'define'],
-            correctAnswer: 1,
-            videoTitle: 'Functions in Python',
-        },
-        {
-            id: 4,
-            question: 'Which mode opens a file for reading in Python?',
-            options: ["'w'", "'r'", "'a'", "'x'"],
-            correctAnswer: 1,
-            videoTitle: 'File Handling',
-        },
-    ],
-    java: [
-        {
-            id: 1,
-            question: 'What is the correct way to declare a class in Java?',
-            options: [
-                'class MyClass {}',
-                'Class MyClass {}',
-                'public class MyClass {}',
-                'new class MyClass {}',
-            ],
-            correctAnswer: 2,
-            videoTitle: 'Java Class Structure',
-        },
-        {
-            id: 2,
-            question: 'Which of these is NOT a primitive data type in Java?',
-            options: ['int', 'String', 'boolean', 'double'],
-            correctAnswer: 1,
-            videoTitle: 'Variables and Types',
-        },
-        {
-            id: 3,
-            question:
-                'What keyword is used to inherit from a parent class in Java?',
-            options: ['inherits', 'extends', 'implements', 'super'],
-            correctAnswer: 1,
-            videoTitle: 'Inheritance Basics',
-        },
-    ],
-}
-
 const TestComponent = ({ courseId }) => {
-    const questions = courseTests[courseId] || []
     const navigate = useNavigate()
-
+    const [questions, setQuestions] = useState([])
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answers, setAnswers] = useState([])
     const [showResults, setShowResults] = useState(false)
     const [score, setScore] = useState(0)
+    const { id } = useParams()
+
+    useEffect(() => {
+        const translateId = {
+            javascript: 'JavascriptTest',
+            python: 'PythonTest',
+            java: 'JavaTest',
+        }
+
+        const fetchTestData = async () => {
+            const { data, error } = await supabase
+                .from(translateId[id])
+                .select('*')
+
+            if (error) {
+                console.error('Fetch error:', error.message)
+            } else {
+                setQuestions(data)
+            }
+        }
+
+        fetchTestData()
+    }, [id])
 
     const handleAnswerClick = (selected) => {
         const newAnswers = [...answers]
@@ -227,7 +126,7 @@ const TestComponent = ({ courseId }) => {
                     <div className="space-y-6">
                         {' '}
                         <p>
-                            To receive certificate, you need to get at least 75%
+                            To receive certificate, you need to get at least 70%
                         </p>
                         <button
                             className="bg-white text-blue-500 font-semibold px-6 py-3 rounded-full border border-blue-300 hover:border-blue-500 cursor-pointer"
@@ -257,9 +156,8 @@ const TestComponent = ({ courseId }) => {
     }
 
     const currentQ = questions[currentQuestion]
-
     return (
-        <div className="pt-[88px] max-w-xl mx-auto">
+        <div className="pt-[88px] max-w-2xl w-full">
             <div className="m-4">
                 <div className="mb-4 flex justify-between items-center">
                     <span>

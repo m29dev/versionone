@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { clearUser } from '../RTK/userSlice'
+import { Flame } from 'lucide-react'
 
 const Navbar = () => {
     const navigate = useNavigate()
@@ -91,7 +92,12 @@ const Navbar = () => {
                             >
                                 {user.email.slice(0, 1).toUpperCase()}
                             </button>
-
+                            {user?.access_strike > 0 && (
+                                <span className="absolute top-2 right-2 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-sky-500 to-fuchsia-400 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                    <Flame className="w-4 h-4" />
+                                    {user?.access_strike}
+                                </span>
+                            )}
                             {isOpen && (
                                 <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10 flex-col justify-center align-center text-center">
                                     <button
@@ -194,6 +200,11 @@ const Navbar = () => {
                             >
                                 {user.email.slice(0, 1).toUpperCase()}
                             </button>
+                            {user?.access_strike > 0 && (
+                                <span className="absolute top-2 right-2 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-white bg-gradient-to-r from-sky-500 to-fuchsia-400 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                    <Flame className="w-4 h-4" />
+                                </span>
+                            )}
 
                             {isOpen && (
                                 <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10 flex-col justify-center align-center text-center">

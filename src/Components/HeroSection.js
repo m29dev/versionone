@@ -5,7 +5,7 @@ const HeroSection = () => {
     const navigate = useNavigate()
 
     return (
-        <section className="md:min-h-[100vh] flex items-center pt-20">
+        <section className="md:min-h-[100vh] flex items-center pt-10 md:pt-20">
             <div className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
                 <div className="flex items-center">
                     <div className="flex flex-col items-center space-y-6">
@@ -32,9 +32,8 @@ const HeroSection = () => {
                         </div>
 
                         <p className="font-bold text-gray-600 max-w-lg text-[16px] md:text-2xl lg:text-2xl pt-4 text-center">
-                            Master coding skills through short video courses,
-                            knowledge tests, and a supportive community ready to
-                            celebrate your milestones.
+                            Master coding skills through short video courses and
+                            knowledge tests.
                         </p>
 
                         <div className="flex flex-wrap gap-4 pt-4">

@@ -1,4 +1,4 @@
-import { Volume, Volume2 } from 'lucide-react'
+import { LoaderCircle, Volume, Volume2 } from 'lucide-react'
 import { useRef } from 'react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,6 +12,7 @@ const VideoPlayer = ({ videoData, isActive }) => {
     const { video } = useSelector((state) => state.video)
 
     const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const containerRefClone = containerRef.current
@@ -19,7 +20,13 @@ const VideoPlayer = ({ videoData, isActive }) => {
             ([entry]) => {
                 const videoData = videoRef?.current
                 if (entry.isIntersecting) {
-                    videoData?.play()
+                    videoData?.play().catch((error) => {
+                        if (error) {
+                            console.error(error)
+                        } else {
+                            console.error('Video play error:', error)
+                        }
+                    })
                 } else {
                     videoData?.pause()
 
@@ -67,7 +74,7 @@ const VideoPlayer = ({ videoData, isActive }) => {
 
     useEffect(() => {
         dispatch(setVideo({ isMuted: true, instructionState: true }))
-    }, [dispatch])
+    }, [dispatch, videoData])
 
     const { id } = useParams()
     const { user } = useSelector((state) => state.user)
@@ -77,7 +84,13 @@ const VideoPlayer = ({ videoData, isActive }) => {
 
         const handleVideoEnd = () => {
             currentVideo.currentTime = 0
-            currentVideo?.play()
+            currentVideo?.play().catch((error) => {
+                if (error) {
+                    console.error(error)
+                } else {
+                    console.error('Video play error:', error)
+                }
+            })
 
             // UPDATE USERDATA ONCE TRIGGERED
             const update = async (fetchedData) => {
@@ -161,14 +174,16 @@ const VideoPlayer = ({ videoData, isActive }) => {
                     ref={videoRef}
                     autoPlay
                     muted={video?.isMuted}
-                    // loop
                     playsInline
-                    className="w-screen h-screen"
+                    className="w-screen h-screen object-cover"
+                    onLoadedMetadata={() => {
+                        setIsLoading(false)
+                    }}
                 />
             )}
 
             {!videoData?.videoUrl && videoData?.id !== 'test' && (
-                <div>Video URL error</div>
+                <div className="text-white">Video URL error</div>
             )}
 
             {videoData?.id === 'test' && (
@@ -180,7 +195,7 @@ const VideoPlayer = ({ videoData, isActive }) => {
 
                     <div className="flex justify-center text-xl">
                         <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full shadow cursor-pointer"
+                            className="bg-white/10 text-white font-semibold px-6 py-3 rounded-full shadow cursor-pointer"
                             onClick={() => {
                                 navigate('test')
                             }}
@@ -191,25 +206,39 @@ const VideoPlayer = ({ videoData, isActive }) => {
                 </div>
             )}
 
-            <p className="absolute bottom-4 left-6 text-sm text-gray-400">
+            <p className="absolute bottom-4 mx-6 text-sm text-white">
                 {videoData?.description}
             </p>
 
-            {videoData?.videoUrl && displayUnmute && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-outline text-bold shadow rounded-full p-3 md:py-5 md:px-6">
+            {isLoading && videoData?.videoUrl && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-bold shadow rounded-full p-3 md:py-5 md:px-6">
+                    <LoaderCircle className="w-32 h-32 animate-spin" />
+                </div>
+            )}
+
+            {!isLoading && videoData?.videoUrl && displayUnmute && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-bold shadow rounded-full p-3 md:py-5 md:px-6">
                     <Volume2 className="w-32 h-32" />
                 </div>
             )}
 
-            {videoData?.videoUrl && displayMute && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-outline text-bold shadow rounded-full p-3 md:py-5 md:px-6">
+            {!isLoading && videoData?.videoUrl && displayMute && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-bold shadow rounded-full p-3 md:py-5 md:px-6">
                     <Volume className="w-32 h-32" />
                 </div>
             )}
 
-            {videoData?.videoUrl && video?.instructionState && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-outline text-bold shadow rounded-full p-3 md:py-5 md:px-6">
-                    <p>Tap to Mute / Unmute</p>
+            {!isLoading && videoData?.videoUrl && video?.instructionState && (
+                <div
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-col justify-center items-center whitespace-nowrap
+"
+                >
+                    <div className="hidden md:block bg-gray-500/10 text-white text-2xl text-bold shadow rounded-full p-3 flex m-auto">
+                        Click to unmute, Scroll to change video.
+                    </div>
+                    <div className="block md:hidden bg-gray-500/10 text-white text-xl text-bold shadow rounded-full p-3 flex m-auto">
+                        Tap to unmute, Swipe to change video.
+                    </div>
                 </div>
             )}
         </div>
