@@ -8,6 +8,7 @@ import LearningPage from './Pages/LearningPage'
 import QuizPage from './Pages/QuizPage'
 import UserPage from './Pages/UserPage'
 import TestPage from './Pages/TestPage'
+import ErrorPage from './Pages/Error.Page'
 
 function App() {
     return (
@@ -21,6 +22,8 @@ function App() {
                 <Route path="/courses/:id" element={<LearningPage />} />
                 <Route path="/courses/:id/test" element={<TestPage />} />
                 <Route path="/quiz" element={<QuizPage />} />
+                <Route path="/404" element={<ErrorPage />} />
+                <Route path="*" element={<ErrorPage />} />
             </Routes>
         </Router>
     )
