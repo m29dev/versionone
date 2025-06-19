@@ -21,7 +21,6 @@ const CoursesPage = () => {
             console.error('Fetch error:', error.message)
         } else {
             setCourses(data)
-            console.log(data)
         }
     }, [])
 
@@ -34,7 +33,7 @@ const CoursesPage = () => {
             <Navbar />
 
             <main className="flex-grow pt-40">
-                <section className="hero-gradient py-16">
+                <section className="hero-gradient md:py-16">
                     <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
                         <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
                             Choose Your Coding Journey

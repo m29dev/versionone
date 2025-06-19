@@ -43,16 +43,47 @@ const SignUpPage = () => {
 
     const handleCreateUserData = async (sign_up_user) => {
         try {
+            const now = new Date()
+            const today = now.toLocaleString('pl-PL', {
+                timeZone: 'Europe/Warsaw',
+                dateStyle: 'short',
+            })
+
             const { data, error } = await supabase
                 .from('UserData')
                 .insert([
                     {
                         user_UID: sign_up_user?.id,
                         user_email: sign_up_user?.email,
-                        courses: { javascript: 1, python: 2, java: 3 },
+                        courses: {
+                            javascript: {
+                                id: 'javascript',
+                                name: 'JavaScript',
+                                totalLessons: 10,
+                                completedLessons: [],
+                                lastAccessed: null,
+                            },
+                            python: {
+                                id: 'python',
+                                name: 'Python',
+                                totalLessons: 10,
+                                completedLessons: [],
+                                lastAccessed: null,
+                            },
+                            java: {
+                                id: 'java',
+                                name: 'Java',
+                                totalLessons: 10,
+                                completedLessons: [],
+                                lastAccessed: null,
+                            },
+                        },
+                        accessed_at: today,
+                        access_strike: 0,
                     },
                 ])
                 .select()
+                .single()
 
             if (error) {
                 console.error('Insert error:', error.message)
@@ -60,34 +91,16 @@ const SignUpPage = () => {
                 if (data) {
                     dispatch(
                         setUser({
-                            id: sign_up_user?.id,
-                            email: sign_up_user?.email,
-                            created: sign_up_user?.created_at,
-                            courses: {
-                                javascript: {
-                                    id: 'javascript',
-                                    name: 'JavaScript',
-                                    totalLessons: 10,
-                                    completedLessons: 0,
-                                    lastAccessed: null,
-                                },
-                                python: {
-                                    id: 'python',
-                                    name: 'Python',
-                                    totalLessons: 10,
-                                    completedLessons: 0,
-                                    lastAccessed: null,
-                                },
-                                java: {
-                                    id: 'java',
-                                    name: 'Java',
-                                    totalLessons: 10,
-                                    completedLessons: 0,
-                                    lastAccessed: null,
-                                },
-                            },
+                            id: data?.user_UID,
+                            email: data?.user_email,
+                            created: data?.created_at,
+                            courses: data?.courses,
+                            accessed_at: data?.accessed_at,
+                            access_strike: data?.access_strike,
                         })
                     )
+
+                    navigate('/')
                 }
             }
         } catch (err) {

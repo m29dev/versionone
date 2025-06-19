@@ -70,7 +70,7 @@ const QuizPage = () => {
         <div className="min-h-screen flex flex-col">
             <Navbar />
             <main className="flex-grow flex items-center justify-center">
-                <div className="pt-[88px] max-w-xl mx-auto">
+                <div className="pt-[88px] max-w-2xl w-full">
                     <div className="m-4">
                         {!result && (
                             <>

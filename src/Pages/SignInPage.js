@@ -42,6 +42,7 @@ const SignInPage = () => {
             .from('UserData')
             .select('*')
             .eq('user_UID', sign_in_user?.id)
+            .single()
 
         if (error) {
             console.error('Fetch error:', error.message)
@@ -52,8 +53,73 @@ const SignInPage = () => {
                     email: sign_in_user?.email,
                     created: sign_in_user?.created_at,
                     courses: data?.courses,
+                    accessed_at: data?.accessed_at,
+                    access_strike: data?.access_strike,
                 })
             )
+
+            updateUserData(
+                sign_in_user?.id,
+                data?.accessed_at,
+                data?.access_strike
+            )
+        }
+    }
+
+    // update strike
+    const updateUserData = async (userId, accessed_at, access_strike) => {
+        const now = new Date()
+        const today = now.toLocaleString('pl-PL', {
+            timeZone: 'Europe/Warsaw',
+            dateStyle: 'short',
+        })
+
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+        const yesterday = oneDayAgo.toLocaleString('pl-PL', {
+            timeZone: 'Europe/Warsaw',
+            dateStyle: 'short',
+        })
+
+        // accessed_at === today => nothing
+        if (accessed_at === today) return
+
+        const runUpdate = async (acc_at, acc_str) => {
+            const { data, error } = await supabase
+                .from('UserData')
+                .update({
+                    accessed_at: acc_at,
+                    access_strike: acc_str,
+                })
+                .eq('user_UID', userId)
+                .select()
+                .single()
+
+            if (error) {
+                console.error('Update error:', error.message)
+            } else {
+                if (data) {
+                    dispatch(
+                        setUser({
+                            id: data?.user_UID,
+                            email: data?.user_email,
+                            created: data?.created_at,
+                            courses: data?.courses,
+                            accessed_at: data?.accessed_at,
+                            access_strike: data?.access_strike,
+                        })
+                    )
+                }
+            }
+        }
+
+        // accessed_at === yesterday => update accessed_at = today, update access_strike += access_strike
+        if (accessed_at === yesterday) {
+            runUpdate(today, access_strike + 1)
+        }
+
+        // accessed_at !== yesterday => update accessed_at = today, update access_strike = 0
+        if (accessed_at !== yesterday) {
+            runUpdate(today, 0)
         }
     }
 

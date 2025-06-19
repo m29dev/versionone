@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { BookOpen, Settings, User, Trophy } from 'lucide-react'
+import { BookOpen, Settings, User, Trophy, Flame } from 'lucide-react'
 import Footer from '../Components/Footer'
 import Navbar from '../Components/Navbar'
 import { useSelector } from 'react-redux'
@@ -15,7 +15,9 @@ const UserPage = () => {
     const { pathname: url } = useLocation()
     const { user } = useSelector((state) => state.user)
 
-    const [totalCoursesCompleted, setTotalCoursesCompleted] = useState(0)
+    useEffect(() => {
+        if (!user) return navigate('/signin')
+    }, [user, navigate])
 
     const courses = useMemo(() => ['javascript', 'python', 'java'], [])
 
@@ -33,19 +35,6 @@ const UserPage = () => {
             setLearningState(data[0].courses)
         }
     }, [user])
-
-    useEffect(() => {
-        let count1 = 0
-        courses.map((course) => {
-            if (learningState?.[course]?.certificationTest >= 75) {
-                return (count1 += 1)
-            } else {
-                return null
-            }
-        })
-
-        setTotalCoursesCompleted(count1)
-    }, [learningState, courses])
 
     useEffect(() => {
         fetchUserData()
@@ -153,7 +142,7 @@ const UserPage = () => {
                                 }`}
                             >
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="md:col-span-2 bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow space-y-6">
+                                    <div className="md:col-span-1 bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow space-y-6">
                                         <div>
                                             <h3 className="flex items-center gap-2 font-medium font-bold">
                                                 Profile Information
@@ -182,25 +171,99 @@ const UserPage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow space-y-6">
-                                        <div>
-                                            <h3 className="flex items-center gap-2 font-medium font-bold">
-                                                Statistics
-                                            </h3>
+                                    <div className="relative bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                        <div className="bg-white w-full h-full">
+                                            <div>
+                                                <h3 className="flex items-center gap-2 font-medium font-bold">
+                                                    Certificates
+                                                </h3>
 
-                                            <label className="text-sm font-medium text-gray-600">
-                                                Courses Completed
-                                            </label>
+                                                <label className="text-sm font-medium text-gray-600">
+                                                    Courses Completed with
+                                                    certificate
+                                                </label>
+                                            </div>
+                                            <div className="space-y-4 mt-6">
+                                                <div className="flex items-center">
+                                                    <div className="text-lg text-primary flex-col items-center text-gray-900">
+                                                        {learningState
+                                                            ?.javascript
+                                                            ?.certificationTest && (
+                                                            <div>
+                                                                JavaScript
+                                                                certificate:{' '}
+                                                                {
+                                                                    learningState
+                                                                        ?.javascript
+                                                                        ?.certificationTest
+                                                                }
+                                                                %
+                                                            </div>
+                                                        )}
+
+                                                        {learningState?.python
+                                                            ?.certificationTest && (
+                                                            <div>
+                                                                Python
+                                                                certificate:{' '}
+                                                                {
+                                                                    learningState
+                                                                        ?.python
+                                                                        ?.certificationTest
+                                                                }
+                                                                %
+                                                            </div>
+                                                        )}
+
+                                                        {learningState?.java
+                                                            ?.certificationTest && (
+                                                            <div>
+                                                                Java
+                                                                certificate:{' '}
+                                                                {
+                                                                    learningState
+                                                                        ?.java
+                                                                        ?.certificationTest
+                                                                }
+                                                                %
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <Trophy className="w-10 h-10 absolute top-5 right-3 text-sky-500" />
                                         </div>
-                                        <div className="space-y-4">
-                                            <div className="flex items-center">
-                                                <p className="text-6xl font-bold text-primary flex items-center text-gray-900">
-                                                    {totalCoursesCompleted}
-                                                </p>
+                                    </div>
 
-                                                <Trophy className="w-10 h-10" />
+                                    <div className="relative bg-white p-[2.7px] rounded-2xl bg-gradient-to-r from-sky-500 to-fuchsia-400 shadow-sm hover:shadow-md transition-shadow">
+                                        <div className="bg-white rounded-xl space-y-6 p-2 w-full h-full">
+                                            <div>
+                                                <h3 className="flex items-center gap-2 font-medium font-bold">
+                                                    Strike
+                                                </h3>
+
+                                                <label className="text-sm font-medium text-gray-600">
+                                                    Your current strike of daily
+                                                    Sign In's
+                                                </label>
+                                            </div>
+                                            <div className="mx-auto">
+                                                <div className="flex items-center px-1 py-1">
+                                                    <p className="text-lg text-primary flex items-center text-gray-900">
+                                                        {user?.access_strike ===
+                                                        0
+                                                            ? `${user?.access_strike} days strike`
+                                                            : user?.access_strike ===
+                                                              1
+                                                            ? `${user?.access_strike} day strike`
+                                                            : `${user?.access_strike} days strike`}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
+
+                                        <Flame className="w-10 h-10 absolute top-5 right-3 text-sky-500" />
                                     </div>
                                 </div>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import VideoPlayer from '../Components/VideoPlayer'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import NavbarLearningMode from '../Components/NavbarLearningMode'
 import './LearningPage.css'
 import { supabase } from '../supabaseClient'
@@ -13,6 +13,11 @@ const LearningPage = () => {
 
     const { id } = useParams()
     const { user } = useSelector((state) => state.user)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!user) return navigate('/signin')
+    }, [user, navigate])
 
     // UPDATE lastAccessed
     useEffect(() => {
@@ -61,10 +66,11 @@ const LearningPage = () => {
     }
 
     const course_id = translateId[id]
-
     const [videos, setVideos] = useState([])
 
     const fetchVideoData = useCallback(async () => {
+        if (!course_id) return navigate('/404')
+
         const { data, error } = await supabase
             .from('VideosData')
             .select('*')
@@ -75,7 +81,7 @@ const LearningPage = () => {
         } else {
             setVideos([...data, { id: 'test' }])
         }
-    }, [course_id, setVideos])
+    }, [course_id, setVideos, navigate])
 
     useEffect(() => {
         fetchVideoData()
@@ -301,15 +307,24 @@ const LearningPage = () => {
       "
         >
             <NavbarLearningMode title={id} />
-            <main className="flex-grow overflow-hidden mx-auto max-w-3xl">
-                {videos.map((video, index) => (
-                    <VideoPlayer
-                        key={video.id}
-                        videoData={video}
-                        isActive={index === activeIndex}
-                        isMuted={isMuted}
-                    />
-                ))}
+            <main
+                className={`flex-grow overflow-hidden mx-auto max-w-3xl bg-gradient-to-r ${
+                    id === 'javascript'
+                        ? 'from-yellow-300 to-yellow-400'
+                        : id === 'python'
+                        ? 'from-green-300 to-green-400'
+                        : 'from-orange-300 to-orange-400'
+                }`}
+            >
+                {videos &&
+                    videos.map((video, index) => (
+                        <VideoPlayer
+                            key={video.id}
+                            videoData={video}
+                            isActive={index === activeIndex}
+                            isMuted={isMuted}
+                        />
+                    ))}
             </main>
         </div>
     )
