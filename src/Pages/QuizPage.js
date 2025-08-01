@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../Components/Navbar'
 import Footer from '../Components/Footer'
 import { supabase } from '../supabaseClient'
+import { useSelector } from 'react-redux'
 
 const QuizPage = () => {
     useEffect(() => {
@@ -14,6 +15,11 @@ const QuizPage = () => {
     const [result, setResult] = useState(null)
     const navigate = useNavigate()
     const [questions, setQuestions] = useState([])
+    const { user } = useSelector((state) => state.user)
+
+    useEffect(() => {
+        if (!user) return navigate('/signin')
+    }, [user, navigate])
 
     const handleAnswer = (option) => {
         setAnswers([...answers, option.points])

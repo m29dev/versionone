@@ -4,6 +4,7 @@ import Footer from '../Components/Footer'
 import { useNavigate } from 'react-router-dom'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
+import { useSelector } from 'react-redux'
 
 const CoursesPage = () => {
     useEffect(() => {
@@ -11,6 +12,11 @@ const CoursesPage = () => {
     }, [])
 
     const navigate = useNavigate()
+    const { user } = useSelector((state) => state.user)
+
+    useEffect(() => {
+        if (!user) return navigate('/signin')
+    }, [user, navigate])
 
     const [courses, setCourses] = useState([])
 
